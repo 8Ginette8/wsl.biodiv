@@ -4,9 +4,9 @@
 
 ## Authors
 
-Niklaus Zimmermann
-Rafael Wüest
-Philipp Brun (philipp.brun at wsl.ch)
+Niklaus Zimmermann 
+Rafael Wüest 
+Philipp Brun (philipp.brun at wsl.ch) 
 
 Dynamic Macroecology Group
 Swiss Federal Research Institute WSL
@@ -25,3 +25,8 @@ Developing a toolbox to efficiently handle SDMs in collaborative projects.
 ## Tools
 
 Functions and classes in the R environment
+
+This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+
+This line is also a separate paragraph, but...
+This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
