@@ -1,14 +1,12 @@
 # wsl_biodiv
 
-
-
 2018-05-08 V0.1
 
 ## Authors
 
-Niklaus Zimmermann 
+Niklaus Zimmermann
 Rafael Wüest
-Philipp Brun (philipp.brun@wsl.ch)
+Philipp Brun (philipp.brun at wsl.ch)
 
 Dynamic Macroecology Group
 Swiss Federal Research Institute WSL
