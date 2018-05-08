@@ -1,5 +1,7 @@
 # wsl_biodiv
 
+
+
 2018-05-08 V0.1
 
 ## Authors
@@ -25,6 +27,3 @@ Developing a toolbox to efficiently handle SDMs in collaborative projects.
 ## Tools
 
 Functions and classes in the R environment
-
-
-
