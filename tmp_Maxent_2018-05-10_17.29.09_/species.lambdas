@@ -1,0 +1,7 @@
+SegSumT, 0.0, 18.3, 18.700000762939453
+USRainDays, 0.0, 0.847, 1.152999997138977
+USSlope, 0.0, 0.4, 8.300000190734863
+linearPredictorNormalizer, 0.0
+densityNormalizer, 2.0
+numBackgroundPoints, 2
+entropy, 0.6931471805599453

@@ -1,0 +1,2 @@
+X,Y,Test or train,Raw prediction,Cumulative prediction,Logistic prediction
+1.0,1.0,train,0.5,50.0,0.5

@@ -10,44 +10,23 @@
 
 # ###########################################################################
 
-
 ### =========================================================================
-### retrieve meta information
-### =========================================================================
-
-meta.info=function(env = parent.frame()){
-  
-  e=as.list(env)
-  
-  
-  m.i=list()
-  
-  m.i$author=Sys.info()[["user"]]
-  m.i$date=Sys.time()
-  m.i$replicatetype=e$replicatetype
-  m.i$replicates=e$reps
-  m.i$taxon=e$taxon
-  print(class(e$env_vars))
-  m.i$env_vars=colnames(e$env_vars)
-  
-  m.i$project=e$project
-  
-  return(m.i)
-}
-
-### =========================================================================
-### check input data
+### preparation function
 ### =========================================================================
 
-checks=function(env=parent.frame()){
+preps=function(env=parent.frame(),call){
   
+  env=as.list(env)
   
-  #check for replicate type
+  ### ----------------
+  ### check input data
+  ### ----------------
+  
   if(env$replicatetype%in%c("none","cv","block-cv","splitsample")==F){stop("Non-existing replicatetype!")}
   
   if(env$replicatetype=="block-cv" && is.na(env$strata)){stop("Stratum vector needed for block crossvalidation!")}
   
-  if(env$replicatetype=="block-cv" && unique(env$strata)!=env$reps){stop("Stratum vector has wrong number of levels!")}
+  if(env$replicatetype=="block-cv" && length(unique(env$strata))!=env$reps){stop("Stratum vector has wrong number of levels!")}
   
   if(env$replicatetype%in%c("cv","block-cv","splitsample")==T && (is.na("reps") ==T || env$reps<2)){stop("Give reasonalbe number of replicates!")}
   
@@ -60,43 +39,76 @@ checks=function(env=parent.frame()){
   if(env$save && !(env$project%in%list.dirs(env$path))){stop(paste("Project directory not existing in",env$path,
                                                                    "- please create manually"))}  
   
+  ### -------------------
+  ### generate wsl.fit obj
+  ### -------------------
   
-}
-
-### =========================================================================
-### Subset data according to replicate types
-### =========================================================================
-
-partition=function(replicatetype,reps,dat,strata){
+  out<-wsl.fit()
+  
+  # store function call
+  out@call<-call
+  
+  ### -------------------
+  ### add meta.info
+  ### -------------------
+  
+  m.i=list()
+  
+  m.i$author=Sys.info()[["user"]]
+  m.i$date=Sys.time()
+  m.i$replicatetype=env$replicatetype
+  m.i$replicates=env$reps
+  m.i$taxon=env$taxon
+  m.i$env_vars=paste(colnames(env$env_vars),collapse=", ")
+  m.i$project=env$project
+  m.i$model_tag=env$mod_tag
+  
+  # Add step info if exists
+  if("step"%in%names(env)){
+    m.i$step=env$step
+  }
+  
+  out@meta=m.i
+  
+  ### ----------------------
+  ### partition observations
+  ### ----------------------
+  
+  # partition observations according to replicate type
+  dat=cbind(data.frame(Presence=env$pa),env$env_vars)
   
   obschoice<-list()
   testing<-list()
-  if(replicatetype=="none"){
+  if(env$replicatetype=="none"){
     obschoice[[1]]<-dat
     
-  } else if (replicatetype=="splitsample"){
-    for (i in 1:reps){
-      obschoice[[i]]<-dat[sample(1:nrow(dat),size=round(maxobs*0.7),replace=F),]
+  } else if (env$replicatetype=="splitsample"){
+    for (i in 1:env$reps){
+      obschoice[[i]]<-dat[sample(1:nrow(dat),size=round(nrow(dat)*0.7),replace=F),]
       testing[[i]]<-dat[c(1:nrow(dat))[-which(1:nrow(dat)%in%obschoice[[i]])],]
     }
     
-  } else if (grepl("cv",replicatetype)){
+  } else if (grepl("cv",env$replicatetype)){
     
-    if(replicatetype=="cv"){
+    if(env$replicatetype=="cv"){
       unistr=sample(1:5,size=nrow(dat),replace=T)      
     } else {
-      unistr=unique(strata)      
+      unistr=env$strata   
     }
     
-    for (i in 1:reps){
-      obschoice[[i]]<-dat[which(strata!=unistr[i]),]
-      testing[[i]]<-dat[which(strata!=unistr[i]),]
+    for (i in 1:env$reps){
+      obschoice[[i]]<-dat[which(unistr!=unique(unistr)[i]),]
+      testing[[i]]<-dat[which(unistr!=unique(unistr)[i]),]
     }
     
   }
   
-  out=list(training=obschoice,testing=testing)
+  # add testing data to wsl.fit obj
+  out@tesdat=testing
   
-  return(out)
+  # return objects for model fitting
+  return(list(wslfi=out,train=obschoice))
+  
 }
+
 
