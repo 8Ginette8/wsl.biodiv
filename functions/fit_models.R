@@ -16,10 +16,9 @@
 
 
 ### =========================================================================
-### Set Class
+### Set wsl.fit Class
 ### =========================================================================
 
-# generate pfit class
 wsl.fit<-setClass("wsl.fit",slots=c(meta="list", # Meta information
                                     tesdat="list", # Test data subset
                                     fits="list", # Model objects
@@ -136,20 +135,21 @@ wsl.maxent<-function(pa=numeric(),
   # check and prepare data and output
   lis=preps(call=match.call())
   
-  # Create directory for temporary MaxEnt data
-  id <- as.numeric(commandArgs(trailingOnly=TRUE))
-  me.temp.dir<-paste("tmp_Maxent",gsub("\\:","\\.",Sys.time()),sep="_")
-  me.temp.dir<-paste(gsub(" ","_",me.temp.dir),id,sep="_")
-  dir.create(me.temp.dir)
-  
   #fit maxent
   fits=list()
   for(i in 1:reps){
+    
+    # Create directory for temporary MaxEnt data
+    me.temp.dir<-paste("tmp_Maxent",print(as.numeric(Sys.time())*1000,digits=15),sep="_")
+    dir.create(me.temp.dir)
     
     d.in<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
     vec<-lis$train[[i]][,"Presence"]
     
     fits[[i]]=maxent(x=d.in,p=vec,...,path=me.temp.dir)
+    
+    #Remove Temporary folder for Maxent
+    unlink(me.temp.dir,recursive=T)
   }
   
   # Name the fits
@@ -160,9 +160,6 @@ wsl.maxent<-function(pa=numeric(),
   
   # supply fitted objects
   lis$wslfi@fits=fits
-  
-  #Remove Temporary folder for Maxent
-  unlink(me.temp.dir,recursive=T)
   
   # Save
   #...
@@ -215,6 +212,90 @@ wsl.gbm<-function(pa=numeric(),
 }
 
 ### =========================================================================
+### define wsl.multi.fit function
+### =========================================================================
+
+wsl.multi.fit<-function(pa=numeric(), 
+                  env_vars=data.frame(),
+                  taxon=character(),
+                  replicatetype=character(),
+                  reps,
+                  strata=NA,
+                  save=F,
+                  project=NA,
+                  path=NA,
+                  mod_args=list()){
+  
+  # Check supplied model types
+  
+  for(i in 1:length(mod_args)){
+    if(!(mod_args[[i]]@mod%in%c("glm","gam","gbm","maxent","randomForest"))){
+      warning(paste(mod_args[[i]]@mod,"not in tested model functions. You might run in to problems when evaluating/predicting..."))
+    }
+  }
+  
+  # check and prepare data and output
+  lis=preps(call=match.call())
+
+  # loop over replicates
+  fits=list()
+  for(i in 1:reps){
+    
+    modi=list()
+    # loop over models
+    for(j in 1:length(mod_args)){
+      
+      if(mod_args[[j]]@mod=="maxent"){
+        
+        # Create directory for temporary MaxEnt data
+        hde(mod_args[[j]]@args$me.temp.dir<-paste("tmp_Maxent",
+                                                  print(as.numeric(Sys.time())*1000,digits=15),
+                                                  sep="_"))
+        dir.create(mod_args[[j]]@args$me.temp.dir)
+        
+        mod_args[[j]]@args$d.in<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
+        mod_args[[j]]@args$vec<-lis$train[[i]][,"Presence"]
+        
+        hde(modi[[j]]<-do.call(mod_args[[j]]@mod,mod_args[[j]]@args))
+        
+        #Remove Temporary folder for Maxent
+        unlink(mod_args[[j]]@args$me.temp.dir,recursive=T)
+        
+      } else {
+        
+        mod_args[[j]]@args$data=lis$train[[i]]
+        
+        if(mod_args[[j]]@mod=="randomForest"){
+          mod_args[[j]]@args$data$Presence=as.factor(mod_args[[j]]@args$data$Presence)
+        }
+        
+        modi[[j]]=do.call(mod_args[[j]]@mod,mod_args[[j]]@args)
+      }
+      
+      names(modi)[j]=ifelse(mod_args[[j]]@tag=="",paste0("model_",j),mod_args[[j]]@tag)
+
+      if(mod_args[[j]]@step){
+        modi[[j]]=stepAIC(modi[[j]],direction="both",trace=F)
+      }
+    }
+    
+    fits[[i]]=modi
+
+  }
+  
+  names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
+  
+  # supply fitted objects
+  lis$wslfi@fits=fits
+  
+  # Save
+  #...
+  
+  return(lis$wslfi)
+  
+}
+
+### =========================================================================
 ### define summary function for wsl.fit objects
 ### =========================================================================
 
@@ -224,8 +305,14 @@ sm=setMethod("summary",signature(object="wsl.fit"),definition=function(object){
   print(object@call)
   
   cat("\nMeta information: \n")
+  df=as.data.frame(object@meta[c("author","date","project")])  
   
-  df=as.data.frame(object@meta[c("author","date","project","model_tag")])
+  if(as.character(object@call)[1]=="wsl.multi.fit"){
+    df$model_tags=paste(names(object@fits[[1]]),collapse=", ")
+  } else {
+    df$model_tags=object@meta["model_tag"]    
+  }
+
   rownames(df)=""
   print(df)
   

@@ -37,7 +37,7 @@ preps=function(env=parent.frame(),call){
   if(env$save && is.na(env$project)){stop("supply project in which data should be saved!")}
   
   if(env$save && !(env$project%in%list.dirs(env$path))){stop(paste("Project directory not existing in",env$path,
-                                                                   "- please create manually"))}  
+                                                                   "- please create manually"))} 
   
   ### -------------------
   ### generate wsl.fit obj
@@ -108,7 +108,38 @@ preps=function(env=parent.frame(),call){
   
   # return objects for model fitting
   return(list(wslfi=out,train=obschoice))
-  
 }
 
+### =========================================================================
+### define multi.input class
+### =========================================================================
 
+# generate pfit class
+multi.input<-setClass("multi.input",slots=c(mod="character", # Model function
+                                            args="list", # Test data subset
+                                            tag="character", # Model objects
+                                            step="logical")) # conserve function call
+
+### =========================================================================
+### define mulit function
+### =========================================================================
+
+multi=function(mod,args,tag="",step=F){
+  
+  # Generate multi.input object
+  out=multi.input()
+  out@tag=tag
+  out@step=step
+  out@args=args
+  out@mod=mod
+  
+  return(out)
+}
+
+### =========================================================================
+### hide annoying prints
+### =========================================================================
+
+hde=function(x){
+  invisible(capture.output(x))
+}

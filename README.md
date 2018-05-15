@@ -22,6 +22,49 @@ Developing a toolbox to efficiently handle SDMs in collaborative projects.
 - Model evaluation should flexibly handle various fitted model objects
 - Model prediction should flexibly handle various fitted model objects
 
-## Tools
+## Functions and classes
 
-Functions and classes in the R environment
+### Model fitting
+
+#### Main functions
+- wsl.glm
+- wsl.gam
+- wsl.maxent
+- wsl.gbm
+
+Flexibly fit various types of functions but let framework take care of resampling, meta-info storage, and file saving
+
+- wsl.multi.fit
+
+As above but a list with any models/parametrizations can be supplied for which predictions can be made.
+
+- summary.wsl.fit
+
+Print a summary of wsl.fit objects
+
+#### Sub functions
+- preps
+
+Check input data, collect meta information, take care of data subsetting  
+
+- multi
+
+Generate a multi.input object for the wsl.multi.fit function (see below)
+
+- hde
+
+Avoid functions from printing unneccessary stuff
+
+#### Classes
+
+- wsl.fit
+
+Generic class to store model output, testing data subsets, and meta information
+
+- multi.input
+
+Simple class to store model specifications for wsl.multi.fit function
+
+### Model evaluation
+
+### Model prediction

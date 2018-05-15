@@ -31,6 +31,7 @@ library(mgcv)
 library(dismo)
 library(MASS)
 library(gbm)
+library(randomForest)
 
 # source functions
 scr=list.files("functions/",full.names=T)
@@ -53,7 +54,7 @@ env=Anguilla_train[,vrs]
 ### Check out wsl.glm
 ### =========================================================================
 
-form=as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
+form.glm=as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
 
 # Try out wsl.glm funcion
 modi1=wsl.glm(pa=Anguilla_train$Angaus,
@@ -63,7 +64,7 @@ modi1=wsl.glm(pa=Anguilla_train$Angaus,
              reps=5,
              project="prototest",
              mod_tag="test-glm",
-             formula=form,
+             formula=form.glm,
              family="binomial",
              step=T)
 
@@ -77,7 +78,7 @@ summary(modi1@fits$`test-glm01`)
 ### Check out wsl.gam
 ### =========================================================================
 
-form=as.formula(paste("Presence~",paste(paste0("s(",vrs,")"),collapse="+")))
+form.gam=as.formula(paste("Presence~",paste(paste0("s(",vrs,")"),collapse="+")))
 
 # Try out wsl.glm funcion
 modi2=wsl.gam(pa=Anguilla_train$Angaus,
@@ -87,7 +88,7 @@ modi2=wsl.gam(pa=Anguilla_train$Angaus,
              reps=3,
              project="prototest",
              mod_tag="test-gam",
-             formula=form,
+             formula=form.gam,
              family="binomial",
              step=F)
 
@@ -101,6 +102,8 @@ summary(modi2@fits$`test-gam01`)
 ### Check out wsl.gbm
 ### =========================================================================
 
+form.gbm=as.formula(Presence ~ .)
+
 # Try out wsl.glm funcion
 modi3=wsl.gbm(pa=Anguilla_train$Angaus,
               env_vars = env,
@@ -109,7 +112,7 @@ modi3=wsl.gbm(pa=Anguilla_train$Angaus,
               reps=1,
               project="prototest",
               mod_tag="test-brt",
-              formula=Presence ~ . ,
+              formula= form.gbm,
               distribution = "bernoulli",
               interaction.depth = 1,
               shrinkage=.01,
@@ -143,4 +146,37 @@ summary(modi4)
 
 # Access glm object of first replicate
 summary(modi4@fits$`test-mxe01`)
+
+### =========================================================================
+### Check out wsl.multi.fit
+### =========================================================================
+
+form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
+
+modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=T),
+            multi("gbm",list(formula=form.gbm,
+                           distribution = "bernoulli",
+                           interaction.depth = 1,
+                           shrinkage=.01,
+                           n.trees = 3500),"gbm-simple"),
+            multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=F),
+            multi("maxent",list(args=feat),"mxe-simple"),
+            multi("randomForest",list(formula=form.gbm,ntree=500),"waud"),
+            multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=T))
+
+# Try out wsl.glm funcion
+modi5=wsl.multi.fit(pa=Anguilla_train$Angaus,
+                    env_vars = env,
+                    taxon="Angaus",
+                    replicatetype="block-cv",
+                    reps=3,
+                    strata=sample(1:3,nrow(env),replace=T),
+                    project="multitest",
+                    mod_args=modinp)
+
+# Try out custom summary function
+summary(modi5)
+
+# Access glm object of first replicate
+summary(modi5@fits$replicate_01$`glm-simple`)
 
