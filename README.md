@@ -26,11 +26,11 @@ Developing a toolbox to efficiently handle SDMs in collaborative projects.
 
 ### Fit models
 
-- wsl.glm
-- wsl.gam
-- wsl.maxent
-- wsl.gbm
-- wsl.multi.fit
+- __wsl.glm__
+- __wsl.gam__
+- __wsl.maxent__
+- __wsl.gbm__
+- __wsl.multi.fit__
 
 Flexibly fit various types of functions but let framework take care of resampling, meta-info storage, and file saving. wsl.multi.fit basically allows supplying any possible model, however, there may be problems with prediction/evaluation for exotic functions.
 
@@ -54,13 +54,13 @@ Object of class wsl.fit including slots for meta info, testing data for evaluati
 
 ### Summary of model fits
 
-- summary.wsl.fit
+- __summary.wsl.fit__
 
 Print summary of wsl.fit objects
 
 ### Evaluate models
 
-- wsl.evaluate
+- __wsl.evaluate__
 
 Assess several model skill metrics for all models in a wsl.fit object. Currently AUC, RMSE, TSS, PPV, Accuracy, and Cohen's Kappa are evaluated.
 
@@ -76,13 +76,13 @@ Object of class wsl.evaluation with slots for meta info, and model performance e
 
 ### Summary of model evaluation
 
-- summary.wsl.evaluation
+- __summary.wsl.evaluation__
 
 Print summary of wsl.evaluation objects
 
 ### Make predictions
 
-- wsl.predict
+- __wsl.predict__
 
 Make predictions with all models from a wsl.fit object. If thresholds are supplied binary predictions are made, otherwise continuous predictions are returned.
 
@@ -97,7 +97,8 @@ Object of class wsl.prediction with slots for meta info, and model predictions
 
 ### Define model settings for wsl.multi.fit function
 
-- multi
+- __multi__
+
 Create a multi.input object that efficiently stores model specifications
 
 #### Arguments
@@ -111,17 +112,23 @@ Create a multi.input object that efficiently stores model specifications
 Object of class multi
 
 #### Helper functions (not to be called directly by the user)
-- preps
+
+- __preps__
+
 Check input data, collect meta information, take care of data subsetting. Called by model fitting functions.
 
-- hde
+- __hde__
+
 Avoid functions from printing unneccessary stuff. Called by model fitting functions.
 
-- ceval
+- __cevalv
+
 Do the actual model evaluations
 
-- preva.meta
+- __preva.meta__
+
 Generate meta information for prediction and evaluation
 
-- prd
+- __prd__
+
 Correctly feed the predict functions depending on model type (glm, gbm, maxent...)
