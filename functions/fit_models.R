@@ -6,10 +6,6 @@
 # Author: Philipp Brun, philipp.brun@wsl.ch
 # Dynamic Macroecology Group
 # Swiss Federal Research Institute WSL
-# 
-# Description: Here commands relating to the class pfit.2 are defined
-# This is an extension of the previous class pfit that allows a more flexible
-# Choice of models and model classes
 #
 
 # ###########################################################################
@@ -44,21 +40,21 @@ wsl.glm<-function(pa=numeric(),
   # check and prepare data and output
   lis=preps(call=match.call())
   
-  #fit glm
+  #loop over replicates
   fits=list()
   for(i in 1:reps){
-    
-    fits[[i]]=glm(...,data=lis$train[[i]])
+    modi=list()
+    modi[[1]]=glm(...,data=lis$train[[i]])
     if(step){
-      fits[[i]]=stepAIC(fits[[i]],direction="both",trace=F)
+      modi[[1]]=stepAIC(modi[[1]],direction="both",trace=F)
     }
+    names(modi)=ifelse(mod_tag=="","glm",mod_tag)
+    fits[[i]]<-modi
+    
   }
   
   # Name the fits
-  if(mod_tag==""){
-    mod_tag="glm"
-  }
-  names(fits)=paste0(mod_tag,sprintf("%02d",1:reps))
+  names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
   
   # supply fitted objects
   lis$wslfi@fits=fits
@@ -90,21 +86,20 @@ wsl.gam<-function(pa=numeric(),
   # check and prepare data and output
   lis=preps(call=match.call())
   
-  #fit glm
+  #loop over replicates
   fits=list()
   for(i in 1:reps){
     
-    fits[[i]]=gam(...,data=lis$train[[i]])
+    modi=list()
+    modi[[1]]=gam(...,data=lis$train[[i]])
     if(step){
-      fits[[i]]=stepAIC(fits[[i]],direction="both",trace=F)
+      modi[[1]]=step(modi[[1]],direction="both",trace=F)
     }
+    names(modi)=ifelse(mod_tag=="","gam",mod_tag)
+    fits[[i]]<-modi
   }
-  
-  # Name the fits
-  if(mod_tag==""){
-    mod_tag="gam"
-  }
-  names(fits)=paste0(mod_tag,sprintf("%02d",1:reps))
+
+  names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
   
   # supply fitted objects
   lis$wslfi@fits=fits
@@ -135,28 +130,29 @@ wsl.maxent<-function(pa=numeric(),
   # check and prepare data and output
   lis=preps(call=match.call())
   
-  #fit maxent
+  # loop over replicates
   fits=list()
   for(i in 1:reps){
     
+    modi=list()
+    
     # Create directory for temporary MaxEnt data
-    me.temp.dir<-paste("tmp_Maxent",print(as.numeric(Sys.time())*1000,digits=15),sep="_")
+    hde(me.temp.dir<-paste("tmp_Maxent",print(as.numeric(Sys.time())*1000,digits=15),sep="_"))
     dir.create(me.temp.dir)
     
     d.in<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
     vec<-lis$train[[i]][,"Presence"]
     
-    fits[[i]]=maxent(x=d.in,p=vec,...,path=me.temp.dir)
+    hde(modi[[1]]=maxent(x=d.in,p=vec,...,path=me.temp.dir))
     
-    #Remove Temporary folder for Maxent
+    names(modi)=ifelse(mod_tag=="","mxe",mod_tag)
+    fits[[i]]<-modi
+    
+    # Remove Temporary folder for Maxent
     unlink(me.temp.dir,recursive=T)
   }
   
-  # Name the fits
-  if(mod_tag==""){
-    mod_tag="mxe"
-  }
-  names(fits)=paste0(mod_tag,sprintf("%02d",1:reps))
+  names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
   
   # supply fitted objects
   lis$wslfi@fits=fits
@@ -188,18 +184,18 @@ wsl.gbm<-function(pa=numeric(),
   # check and prepare data and output
   lis=preps(call=match.call())
   
-  #fit maxent
+  # loop over replicates
   fits=list()
   for(i in 1:reps){
-
-    fits[[i]]=gbm(...,data=lis$train[[i]])
+    
+    modi=list()
+    modi[[1]]=gbm(...,data=lis$train[[i]])
+    
+    names(modi)=ifelse(mod_tag=="","gbm",mod_tag)
+    fits[[i]]<-modi
   }
   
-  # Name the fits
-  if(mod_tag==""){
-    mod_tag="gbm"
-  }
-  names(fits)=paste0(mod_tag,sprintf("%02d",1:reps))
+  names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
   
   # supply fitted objects
   lis$wslfi@fits=fits
@@ -227,10 +223,9 @@ wsl.multi.fit<-function(pa=numeric(),
                   mod_args=list()){
   
   # Check supplied model types
-  
   for(i in 1:length(mod_args)){
     if(!(mod_args[[i]]@mod%in%c("glm","gam","gbm","maxent","randomForest"))){
-      warning(paste(mod_args[[i]]@mod,"not in tested model functions. You might run in to problems when evaluating/predicting..."))
+      warning(paste(mod_args[[i]]@mod,"not in focal model functions. You might run in to problems when evaluating/predicting..."))
     }
   }
   
@@ -253,8 +248,8 @@ wsl.multi.fit<-function(pa=numeric(),
                                                   sep="_"))
         dir.create(mod_args[[j]]@args$me.temp.dir)
         
-        mod_args[[j]]@args$d.in<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
-        mod_args[[j]]@args$vec<-lis$train[[i]][,"Presence"]
+        mod_args[[j]]@args$x<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
+        mod_args[[j]]@args$p<-lis$train[[i]][,"Presence"]
         
         hde(modi[[j]]<-do.call(mod_args[[j]]@mod,mod_args[[j]]@args))
         

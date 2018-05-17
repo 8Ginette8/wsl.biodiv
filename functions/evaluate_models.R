@@ -13,27 +13,44 @@
 ### Set Class
 ### =========================================================================
 
-wsl.evaluation<-setClass("wsl.evaluation",slots=c(author="character", # Who created the object
-                                           date="Date", # When was it created
-                                           fitting.data="character", # summary of pfit.2 obj
-                                           evaluation.type="character", # how should be evaluated
-                                           evaluation.matrix="matrix", # what should be evaluated
-                                           thres="numeric", # supply external threshold
-                                           performance="list")) # performance objects for models
+wsl.evaluation<-setClass("wsl.evaluation",slots=c(meta="list", # Meta information
+                                                  thres="numeric", # supply external threshold
+                                                  performance="list")) # conserve function call
 
 ### =========================================================================
-### define peval function
+### define wsl.evaluate function
 ### =========================================================================
 # 
-wsl.evaluate<-function(x,em=NA,tester=data.frame(),thres=numeric()){
+wsl.evaluate<-function(x,tester=data.frame(),thres=numeric(),crit="pp=op"){
   
   ### ------------------------
-  ### Check input and prepare Evaluation data
+  ### check tresholds
+  ### ------------------------
+  
+  # thres has to be a vector with named elements (same names
+  # as in evaluation matrix)
+  if(length(thres)>0){
+    if(length(x@fits[[1]])!=length(thres)){
+      stop("Wrong number of thresholds supplied! Should be one threshold per model type...")
+      }
+    if(crit!="external"){
+      warning("Assuming you want external tresholds to be used - setting crit='external'!")
+      crit="external"
+    }
+  }  
+  
+  if(!(crit%in%c("pp=op","max","external"))){
+    stop("Invalid threshold criterion chosen!")
+  }
+  
+  
+  ### ------------------------
+  ### Check testing data and prepare for evaluation
   ### ------------------------ 
   
-  if(x@replicatetype=="none" && nrow(tester)==0){
+  if(x@meta$replicatetype=="none" && nrow(tester)==0){
     stop("External testing data must be supplied for replicatetype 'none'")
-  } else if(x@replicatetype%in%c("crossvalidate","splitsample")) {
+  } else if(x@meta$replicatetype%in%c("cv","block-cv","splitsample")) {
     outerloop<-length(x@tesdat)
     testa<-lapply(x@tesdat,function(x){
       y<-x[,-which(colnames(x)=="Presence")]
@@ -42,120 +59,92 @@ wsl.evaluate<-function(x,em=NA,tester=data.frame(),thres=numeric()){
       y<-x[,"Presence"]
     })
     
-  } else if(replicatetype=="none"){
-    
-    if(!(x@taxon%in%colnames(tester))){stop(paste("Taxon names do not match! Testing taxon should be",x@taxon))}
+  } else if(x@meta$replicatetype=="none"){
     
     outerloop<-1
-    testa<-list(tester[,-which(colnames(tester)==x@taxon)])
-    papa<-list(tester[,x@taxon])
+    testa<-list(tester[,-which(colnames(tester)=="Presence")])
+    papa<-list(tester[,"Presence"])
     
   }
 
   ### ------------------------
-  ### generate peval and add easy info
+  ### generate wsl.evaluation and add meta info
   ### ------------------------
 
-  # Generate pevaluate object
-  out<-wsl.evaluation()
-  
-  #add Meta info
-  out@date<-Sys.Date()
-  out@author<-basename(Sys.getenv("USERPROFILE"))
-  out@fitting.data<-summary(x)
-  
-  # add evaluation type
-  out@evaluation.type<-ifelse(x@replicatetype=="none","extrapolation",x@replicatetype)
-  
-  #define models to evaluate (default all tested models)
-  if(length(em==1)){em<-x@model.matrix
-      }else if(all(dim(em)==c(2,4)) && all(em%in%c(0,1))) {
-        colnames(em)<-colnames(mm)
-        rownames(em)<-colnames(mm)
-      }else{stop("Evaluation matrix is ill-defined!")}
-  
-  out@evaluation.matrix<-em
-  
-  ### ------------------------
-  ### evaluating tresholds
-  ### ------------------------
-  
-  # thres has to be a vector with named elements (same names
-  # as in evaluation matrix)
+  out<-preva.meta(type="evaluation")
 
-  if(length(thres)>0){
-    if(sum(em,na.rm=T)!=length(thres)){stop("wrong number of thresholds supplied!")}
-  }  
-  
   ### ------------------------------------------- 
   ### Evaluate models
   ### -------------------------------------------
   
   lis<-list()
-  # Loop over complexity
+  # loop over replicates
   for(i in 1:length(x@fits)){
     
     lisa<-list()
     # Loop over model types
     for(j in 1:length(x@fits[[1]])){
+
+      # Make prediction
+      pred=prd(x@fits[[i]][[j]],testa[[i]])
       
-      if(em[i,j]==1){
+      #Feed with external threshold if available
+      if(length(thres)==0){
         
-        print(paste("Evaluating",rownames(em)[i],colnames(em)[j],"..."))
+        scores<-ceval(f=pred,
+                      pa=papa[[i]],
+                      tesdat=testa[[i]],
+                      crit=crit)
+        
+      } else{
+        
+        scores<-ceval(f=pred,
+                      pa=papa[[i]],
+                      tesdat=testa[[i]],
+                      tre=thres[which(names(thres)==names(x@fits[[i]])[j])],
+                      crit=crit)
+        
+      } 
+        
+      lisa[[j]]<-scores
 
-        lisbet<-list()
-        # Loop over replicates
-        for(k in 1:x@replicates){
-
-          # Generate probabilistic precitions
-          if(colnames(em)[j]=="Maxent"){
-            
-            pred<-predict(x@fits[[i]]$Maxent[[k]],testa[[k]])
-            
-          } else if(colnames(em)[j]%in%c("GAM","GLM")){
-            
-            pred<-predict(x@fits[[i]][[which(names(x@fits[[i]])==colnames(em)[j])]][[k]],
-                          newdata=testa[[k]],
-                          type="response")
-          
-          } else if(colnames(em)[j]=="BRT"){
-              
-            pred<-predict(x@fits[[i]]$BRT[[k]],
-                          newdata=testa[[k]],
-                          n.trees=3500,
-                          type="response")
-          }
-          
-          # Convert to numeric
-          pred<-as.numeric(pred)
-          
-          #Feed with external threshold if available
-          if(length(thres)==0){
-            
-            scores<-ceval(pred,papa[[k]],testa[[k]],x@taxon)
-            
-          } else{
-            
-            modnam<-paste0(rownames(em)[j],colnames(em)[i])
-            scores<-ceval(pred,papa[[k]],testa[[k]],x@taxon,tre=thres[which(names(thres)==modnam)])
-            
-          } 
-          
-          lisbet[[k]]<-scores
-
-        }
-        lisa[[j]]<-lisbet
-      } else {
-       lisa[[j]]<-list()
-      }
-      
-    }
-    names(lisa)<-colnames(em)
+   }
+    names(lisa)=names(x@fits[[i]])
     lis[[i]]<-lisa
   }
-  names(lis)<-rownames(em)
+  names(lis)<-names(x@fits)
   out@performance<-lis
   
   return(out)
 }
+
+### =========================================================================
+### define summary function for wsl.evaluation objects
+### =========================================================================
+
+sm=setMethod("summary",signature(object="wsl.evaluation"),definition=function(object){
   
+  cat("\nMeta information: \n")
+  df=data.frame(object@meta[c("author","date")],object@meta$wsl.fit[c("project","replicatetype","replicates")])  
+  
+  rownames(df)=""
+  print(df)
+  
+  cat("\nThreshold: \n")
+  df=as.data.frame(object@meta[c("cutoff")])  
+  
+  rownames(df)=""
+  print(df)
+  
+  cat("\nMean skill: \n")
+  
+  mats=list()
+  for(i in 1:length(object@performance)){
+    mats[[i]]=do.call("cbind",object@performance[[i]])
+  }
+  mn=Reduce("+", mats) / length(mats)
+  
+  print(mn)
+  
+})
+

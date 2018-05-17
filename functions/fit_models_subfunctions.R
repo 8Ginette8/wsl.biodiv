@@ -1,5 +1,5 @@
 # ###########################################################################
-# Second order functions for model fitting 
+# Second order functions and classes for model fitting 
 #
 # $Date: 2018-05-08 V2
 
@@ -84,8 +84,9 @@ preps=function(env=parent.frame(),call){
     
   } else if (env$replicatetype=="splitsample"){
     for (i in 1:env$reps){
-      obschoice[[i]]<-dat[sample(1:nrow(dat),size=round(nrow(dat)*0.7),replace=F),]
-      testing[[i]]<-dat[c(1:nrow(dat))[-which(1:nrow(dat)%in%obschoice[[i]])],]
+      chc=sample(1:nrow(dat),size=round(nrow(dat)*0.7),replace=F)
+      obschoice[[i]]<-dat[chc,]
+      testing[[i]]<-dat[-chc,]
     }
     
   } else if (grepl("cv",env$replicatetype)){
@@ -114,15 +115,16 @@ preps=function(env=parent.frame(),call){
 ### define multi.input class
 ### =========================================================================
 
-# generate pfit class
 multi.input<-setClass("multi.input",slots=c(mod="character", # Model function
-                                            args="list", # Test data subset
-                                            tag="character", # Model objects
-                                            step="logical")) # conserve function call
+                                            args="list", # Model function arguments
+                                            tag="character", # Model set-up name
+                                            step="logical")) # Should step function be added?
+                                                             # (Applies mainly to GLM)
 
 ### =========================================================================
-### define mulit function
+### define multi function
 ### =========================================================================
+# stores information in multi.input object
 
 multi=function(mod,args,tag="",step=F){
   
@@ -134,12 +136,4 @@ multi=function(mod,args,tag="",step=F){
   out@mod=mod
   
   return(out)
-}
-
-### =========================================================================
-### hide annoying prints
-### =========================================================================
-
-hde=function(x){
-  invisible(capture.output(x))
 }

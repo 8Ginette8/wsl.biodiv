@@ -14,82 +14,126 @@
 ### evaluate core function (peval)
 ### =========================================================================
 
-ceval<-function(f,pa,tesdat,tagg,tre=numeric()){
+ceval<-function(f,pa,tesdat,crit,tre=numeric()){
     
     # If there are any presences in the evaluation data
     if(any(pa==1)){
-      
+
       z<-prediction(f,pa)
       # AUC
-      auc<-performance(z,measure="auc")@y.values
-      
+      auc<-performance(z,measure="auc")@y.values[[1]]
+      rmse=performance(z,measure="rmse")@y.values[[1]]
+
       # optimum Threshold for conversion into binary outputs
       prbos<-seq(from=0,to=1,length.out=length(pa))
-      zz<-performance(z,measure="tpr",x.measure="fpr",prbe=100000)
-      zzz<-performance(z,measure="ppv",x.measure="npv",prbe=100000)
-      maxPPV<-max(zzz@y.values[[1]],na.rm=T)
-      meanPPV<-mean(zzz@y.values[[1]],na.rm=T)
-      # decide whether to estimate threshold rom roc curve or to use
-      # provided threshold
-      
-      if(length(tre)==0){
-        roc<-cbind(z@cutoffs[[1]],zz@x.values[[1]],zz@y.values[[1]])[-1,] #,zzz@x.values[[1]],zzz@y.values[[1]]
-        
-        if(class(roc)=="matrix"){
-          colnames(roc)<-c("Thres","FPR","TPR")
-          thres.1<-roc[which.min(abs(roc[,3]-(1-roc[,2]))),1]
-          thres.2<-quantile(f,probs=1-mean(pa))
-          threse<-list(thres.1,thres.2)        
-        } else {threse<-NA}
-      } else{
-        
-        threse<-list(tre)
-        print("..using supplied threshold")
-        
-      }
-      
-      # TSS
-      out<-lapply(threse,function(thres){
-        if(!(length(threse)==1 && is.na(threse))){
-          bin<-rep(0,length(f))
-          bin[f>thres]<-1
-          differ<-pa-bin
-          
-          evil<-data.frame(diff=differ,truth=pa,pred=bin)
-          sens<-evil[which(evil$truth==1),]
-          spec<-evil[which(evil$truth==0),]
-          trueprespred<-evil[which(evil$pred==1),]
-          trueabspred<-evil[which(evil$pred==0),]
-          
-          sensitivity<-nrow(sens[which(sens$diff==0),])/nrow(sens)
-          specificity<-nrow(spec[which(spec$diff==0),])/nrow(spec)
-          
-          tpp<-nrow(trueprespred[which(trueprespred$diff==0),])/nrow(trueprespred)
-          tap<-nrow(trueabspred[which(trueabspred$diff==0),])/nrow(trueabspred)
-          
-          tss<- sensitivity + specificity - 1
-          itss<- tpp + tap - 1
-          
-          predprev<-mean(bin)
-          trueprev<-mean(pa)
-          raus<-c(tss,thres,sensitivity,specificity,tpp,tap,itss,predprev,trueprev)
-          names(raus)<-c("TSS","Threshold","Sensitivity","Specificity","PPV",
-                         "NPV","FlippedTrueSkill","PredictedPrevalence","TruePrevalence")
-          
-        } else {raus<-"Model predictions failed"}
-        
-        return(raus)
-      })
-      names(out)<-c("Min_diff_ss","pp=op")
-      
-      
-      weg<-unlist(list(AUC=auc,MaxPPV=maxPPV,MeanPPV=meanPPV,out))
-      
-      
-    } else {
-      
-      weg<-rep(NA,21)
-    }
+      zz<-performance(z,measure="sens",x.measure="spec",prbe=100000)
+      zzz<-performance(z,measure="fpr",x.measure="fnr",prbe=100000)
+      all.tss=zz@x.values[[1]]+zz@y.values[[1]]-1
+      all.ppv<-performance(z,measure="ppv",prbe=100000)
+      all.acc<-performance(z,measure="acc",prbe=100000)
+      pn=zz@x.values[[1]]*zzz@x.values[[1]]
+      py=zz@y.values[[1]]*zzz@y.values[[1]]
 
-  return(weg)
+      all.kappa=(all.acc@y.values[[1]]-py*pn)/(1-py*pn)
+
+
+      if(crit=="max"){
+        ppv=max(all.ppv@y.values[[1]],na.rm=T)
+        tss=max(all.tss)
+        acc=max(all.acc@y.values[[1]],na.rm=T)
+        kappa=max(all.kappa)
+      } else {
+        
+        if(crit=="pp=op"){
+          
+          thr=quantile(f,probs=1-mean(pa))
+          wi=which.min(abs(thr-z@cutoffs[[1]]))
+        
+        }else if(length(tre)!=0){
+          
+          wi=which.min(abs(tre-z@cutoffs[[1]]))
+        }
+        
+        ppv=all.ppv@y.values[[1]][wi]
+        tss=all.tss[wi]
+        acc=all.acc@y.values[[1]][wi]
+        kappa=all.kappa[wi]
+
+      }
+
+    # Return evaluation metrics
+    weg=c(auc=auc,rmse=rmse,ppv=ppv,tss=tss,acc=acc,kappa=kappa)  
+  
+    return(weg)
+    }
 }
+
+### =========================================================================
+### prediction-evaluation meta.info function
+### =========================================================================
+
+preva.meta=function(env=parent.frame(),type=character()){
+  
+  ### ------------------------
+  ### generate wsl.evaluation and add meta info
+  ### ------------------------
+  
+  m.i=list()
+  m.i$author=Sys.info()[["user"]]
+  m.i$date=Sys.time()
+  m.i$wsl.fit=env$x@meta
+  
+  # Generate pevaluate object
+  if(type=="evaluation"){
+    out<-wsl.evaluation()
+    m.i$cutoff=env$crit
+  } else {
+    out<-wsl.prediction()    
+  }
+  
+  #add Meta info
+  out@meta<-m.i
+  
+  return(out)
+  
+}
+
+### =========================================================================
+### prediction-evaluation prediction function
+### =========================================================================
+
+prd=function(mod,tst){
+  
+  # Generate probabilistic precitions
+  if("MaxEnt"%in%class(mod)){
+    
+    pred<-predict(mod,tst)
+    
+  } else if("glm"%in%class(mod)){
+    
+    pred<-predict(mod,
+                  newdata=tst,
+                  type="response")
+    
+  } else if("gbm"%in%class(mod)){
+    
+    pred<-predict(mod,
+                  newdata=tst,
+                  n.trees=mod$n.trees,
+                  type="response")
+    
+  } else if("randomForest"%in%class(mod)){
+    
+    pred<-predict(mod,
+                  newdata=tst,
+                  type="prob")[,2]
+  }
+  
+  # Convert to numeric
+  pred<-as.numeric(pred)
+  
+  return(pred)
+  
+}
+
+

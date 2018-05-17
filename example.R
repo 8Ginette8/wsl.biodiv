@@ -32,6 +32,7 @@ library(dismo)
 library(MASS)
 library(gbm)
 library(randomForest)
+library(ROCR)
 
 # source functions
 scr=list.files("functions/",full.names=T)
@@ -72,7 +73,13 @@ modi1=wsl.glm(pa=Anguilla_train$Angaus,
 summary(modi1)
 
 # Access glm object of first replicate
-summary(modi1@fits$`test-glm01`)
+summary(modi1@fits$replicate_01$`test-glm`)
+
+# Evaluate the model
+eval1=wsl.evaluate(modi1)
+
+# Get evaluation summary
+summary(eval1)
 
 ### =========================================================================
 ### Check out wsl.gam
@@ -96,7 +103,13 @@ modi2=wsl.gam(pa=Anguilla_train$Angaus,
 summary(modi2)
 
 # Access glm object of first replicate
-summary(modi2@fits$`test-gam01`)
+summary(modi2@fits$replicate_01$`test-gam`)
+
+# Evaluate the model
+eval2=wsl.evaluate(modi2,crit="max")
+
+# Get evaluation summary
+summary(eval2)
 
 ### =========================================================================
 ### Check out wsl.gbm
@@ -122,7 +135,16 @@ modi3=wsl.gbm(pa=Anguilla_train$Angaus,
 summary(modi3)
 
 # Access glm object of first replicate
-summary(modi3@fits$`test-brt01`)
+summary(modi3@fits$replicate_01$`test-brt`)
+
+# Prepare external testing data
+tste=data.frame(Presence=Anguilla_train$Angaus,env)
+
+# Evaluate the model
+eval3=wsl.evaluate(modi3,crit="max",tester=tste)
+
+# Get evaluation summary
+summary(eval3)
 
 ### =========================================================================
 ### Check out wsl.maxent
@@ -145,7 +167,16 @@ modi4=wsl.maxent(pa=Anguilla_train$Angaus,
 summary(modi4)
 
 # Access glm object of first replicate
-summary(modi4@fits$`test-mxe01`)
+summary(modi4@fits$replicate_01$`test-mxe`)
+
+# Define external threshold
+thmxe=c(`test-mxe`=0.5)
+
+# Evaluate the model
+eval4=wsl.evaluate(modi4,crit="external",thres=thmxe)
+
+# Get evaluation summary
+summary(eval4)
 
 ### =========================================================================
 ### Check out wsl.multi.fit
@@ -179,4 +210,20 @@ summary(modi5)
 
 # Access glm object of first replicate
 summary(modi5@fits$replicate_01$`glm-simple`)
+
+# Evaluate the model
+eval5<-wsl.evaluate(modi5,crit="max")
+
+# Get evaluation summary
+summary(eval5)
+
+### =========================================================================
+### Make some predictions
+### =========================================================================
+
+# Make prediction
+pred4=wsl.predict(modi4,predat=env,thres=c(0.5))
+
+pred5=wsl.predict(modi5,predat=env)
+
 
