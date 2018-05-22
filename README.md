@@ -121,7 +121,7 @@ Check input data, collect meta information, take care of data subsetting. Called
 
 Avoid functions from printing unneccessary stuff. Called by model fitting functions.
 
-- __cevalv
+- __ceval__
 
 Do the actual model evaluations
 

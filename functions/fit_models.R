@@ -143,7 +143,7 @@ wsl.maxent<-function(pa=numeric(),
     d.in<-lis$train[[i]][,-which(colnames(lis$train[[i]])=="Presence")]
     vec<-lis$train[[i]][,"Presence"]
     
-    hde(modi[[1]]=maxent(x=d.in,p=vec,...,path=me.temp.dir))
+    modi[[1]]=maxent(x=d.in,p=vec,...,path=me.temp.dir)
     
     names(modi)=ifelse(mod_tag=="","mxe",mod_tag)
     fits[[i]]<-modi
