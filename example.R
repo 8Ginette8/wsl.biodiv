@@ -4,9 +4,9 @@
 #
 # $Date: 2017-11-29
 #
-# Author: Philipp Brun, philipp.brun@wsl.ch
-# National Institute of Aquatic Resources (DTU-Aqua), 
-# Technical University of Denmark, Charlottenlund
+# Authors: Philipp Brun, philipp.brun@wsl.ch
+# Dynamic Macroecology Group
+# Swiss Federal Research Institute WSL
 # 
 # ###########################################################################
 
@@ -33,6 +33,10 @@ library(MASS)
 library(gbm)
 library(randomForest)
 library(ROCR)
+library(dismo)
+library(cluster)
+library(NMOF)
+library(spatstat)
 
 # source functions
 scr=list.files("functions/",full.names=TRUE)
