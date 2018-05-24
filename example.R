@@ -37,7 +37,7 @@ library(ROCR)
 # source functions
 scr=list.files("functions/",full.names=T)
 
-lapply(scr, source)
+invisible(lapply(scr, source))
 
 ### =========================================================================
 ### Prepare data
