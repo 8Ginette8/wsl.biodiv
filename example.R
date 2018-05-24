@@ -35,7 +35,7 @@ library(randomForest)
 library(ROCR)
 
 # source functions
-scr=list.files("functions/",full.names=T)
+scr=list.files("functions/",full.names=TRUE)
 
 invisible(lapply(scr, source))
 
@@ -67,7 +67,7 @@ modi1=wsl.glm(pa=Anguilla_train$Angaus,
              mod_tag="test-glm",
              formula=form.glm,
              family="binomial",
-             step=T)
+             step=TRUE)
 
 # Try out custom summary function
 summary(modi1)
@@ -97,7 +97,7 @@ modi2=wsl.gam(pa=Anguilla_train$Angaus,
              mod_tag="test-gam",
              formula=form.gam,
              family="binomial",
-             step=F)
+             step=FALSE)
 
 # Try out custom summary function
 summary(modi2)
@@ -158,7 +158,7 @@ modi4=wsl.maxent(pa=Anguilla_train$Angaus,
                  taxon="Angaus",
                  replicatetype="block-cv",
                  reps=3,
-                 strata=sample(1:3,nrow(env),replace=T),
+                 strata=sample(1:3,nrow(env),replace=TRUE),
                  project="prototest",
                  mod_tag="test-mxe",
                  args=feat)
@@ -184,16 +184,16 @@ summary(eval4)
 
 form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 
-modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=T),
+modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE),
             multi("gbm",list(formula=form.gbm,
                            distribution = "bernoulli",
                            interaction.depth = 1,
                            shrinkage=.01,
                            n.trees = 3500),"gbm-simple"),
-            multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=F),
+            multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE),
             multi("maxent",list(args=feat),"mxe-simple"),
             multi("randomForest",list(formula=form.gbm,ntree=500),"waud"),
-            multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=T))
+            multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE))
 
 # Try out wsl.glm funcion
 modi5=wsl.multi.fit(pa=Anguilla_train$Angaus,
@@ -201,7 +201,7 @@ modi5=wsl.multi.fit(pa=Anguilla_train$Angaus,
                     taxon="Angaus",
                     replicatetype="block-cv",
                     reps=3,
-                    strata=sample(1:3,nrow(env),replace=T),
+                    strata=sample(1:3,nrow(env),replace=TRUE),
                     project="multitest",
                     mod_args=modinp)
 
