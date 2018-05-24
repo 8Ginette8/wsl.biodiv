@@ -110,7 +110,7 @@ summary(modi2)
 summary(modi2@fits$replicate_01$`test-gam`)
 
 # Evaluate the model
-eval2=wsl.evaluate(modi2,crit="max")
+eval2=wsl.evaluate(modi2,crit="maxTSS")
 
 # Get evaluation summary
 summary(eval2)
@@ -145,7 +145,7 @@ summary(modi3@fits$replicate_01$`test-brt`)
 tste=data.frame(Presence=Anguilla_train$Angaus,env)
 
 # Evaluate the model
-eval3=wsl.evaluate(modi3,crit="max",tester=tste)
+eval3=wsl.evaluate(modi3,crit="maxTSS",tester=tste)
 
 # Get evaluation summary
 summary(eval3)
@@ -182,8 +182,11 @@ eval4=wsl.evaluate(modi4,crit="external",thres=thmxe)
 # Get evaluation summary
 summary(eval4)
 
+# Get thresholds
+thr.4=get_thres(eval4)
+
 ### =========================================================================
-### Check out wsl.multi.fit
+### Check out wsl.flex
 ### =========================================================================
 
 form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
@@ -200,14 +203,14 @@ modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",st
             multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE))
 
 # Try out wsl.glm funcion
-modi5=wsl.multi.fit(pa=Anguilla_train$Angaus,
-                    env_vars = env,
-                    taxon="Angaus",
-                    replicatetype="block-cv",
-                    reps=3,
-                    strata=sample(1:3,nrow(env),replace=TRUE),
-                    project="multitest",
-                    mod_args=modinp)
+modi5=wsl.flex(pa=Anguilla_train$Angaus,
+               env_vars = env,
+               taxon="Angaus",
+               replicatetype="block-cv",
+               reps=3,
+               strata=sample(1:3,nrow(env),replace=TRUE),
+               project="multitest",
+               mod_args=modinp)
 
 # Try out custom summary function
 summary(modi5)
@@ -216,19 +219,22 @@ summary(modi5)
 summary(modi5@fits$replicate_01$`glm-simple`)
 
 # Evaluate the model
-eval5<-wsl.evaluate(modi5,crit="max")
+eval5<-wsl.evaluate(modi5,crit="pp=op")
 
 # Get evaluation summary
 summary(eval5)
+
+# Get thresholds
+thr.5=get_thres(eval5)
 
 ### =========================================================================
 ### Make some predictions
 ### =========================================================================
 
 # Make prediction
-pred4=wsl.predict(modi4,predat=env,thres=c(0.5))
+pred4=wsl.predict(modi4,predat=env)
 
-pred5=wsl.predict(modi5,predat=env)
+pred5=wsl.predict(modi5,predat=env,thres=thr.5)
 
 ### =========================================================================
 ### Test out block generation function

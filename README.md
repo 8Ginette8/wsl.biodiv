@@ -30,9 +30,9 @@ Developing a toolbox to efficiently handle SDMs in collaborative projects.
 - __wsl.gam__
 - __wsl.maxent__
 - __wsl.gbm__
-- __wsl.multi.fit__
+- __wsl.flex__
 
-Flexibly fit various types of functions but let framework take care of resampling, meta-info storage, and file saving. wsl.multi.fit basically allows supplying any possible model, however, there may be problems with prediction/evaluation for exotic functions.
+Flexibly fit various types of functions but let framework take care of resampling, meta-info storage, and file saving. wsl.flex basically allows supplying any possible model, however, there may be problems with prediction/evaluation for exotic functions.
 
 #### Arguments
 
@@ -46,8 +46,8 @@ Flexibly fit various types of functions but let framework take care of resamplin
 - project: character indicating the name of the project within which the models are run (later used to define saving directories)
 - path: where to save? (not implemented yet)
 - step: (for glms and gams only) should the models be updated with the step function?
-- mod_tag: (not in wsl.multi.fit) label for the current model
-- mod_args: list with elements of class 'multi.input' which specify models to be fitted in wsl.multi.fit
+- mod_tag: (not in wsl.flex) label for the current model
+- mod_args: list with elements of class 'multi.input' which specify models to be fitted in wsl.flex
 
 #### Output
 Object of class wsl.fit including slots for meta info, testing data for evaluation, and model objects
@@ -68,7 +68,7 @@ Assess several model skill metrics for all models in a wsl.fit object. Currently
 
 - x: a wsl.fit object
 - tester: data.frame with testing data (only mandatory if replicatetype='none' was chosen when models were fitted)
-- threshold: vector of the same length as number of models chosen with custom thresholds for model evaluation. for wsl.multi.fit outputs the thresholds have to be labelled with the same names provided to models
+- threshold: vector of the same length as number of models chosen with custom thresholds for model evaluation. for wsl.flex outputs the thresholds have to be labelled with the same names provided to models
 - crit: which threshold criterion should be considered? Currently 'pp=op' (predicted prevalence = observed prevalence), 'max' maximum value of among all cutoffs, and 'external' (thresholds manually supplied) are possible 
 
 #### Output
@@ -90,12 +90,12 @@ Make predictions with all models from a wsl.fit object. If thresholds are suppli
 
 - x: a wsl.fit object
 - predat: data.frame with points for which predictions should be made
-- thres:  vector of the same length as number of models chosen with custom thresholds for model evaluation. for wsl.multi.fit outputs the thresholds have to be labelled with the same names provided to models
+- thres:  vector of the same length as number of models chosen with custom thresholds for model evaluation. for wsl.flex outputs the thresholds have to be labelled with the same names provided to models
 
 #### Output
 Object of class wsl.prediction with slots for meta info, and model predictions 
 
-### Define model settings for wsl.multi.fit function
+### Define model settings for wsl.flex function
 
 - __multi__
 

@@ -37,32 +37,25 @@ ceval<-function(f,pa,tesdat,crit,tre=numeric()){
       all.kappa=(all.acc@y.values[[1]]-py*pn)/(1-py*pn)
 
 
-      if(crit=="max"){
-        ppv=max(all.ppv@y.values[[1]],na.rm=T)
-        tss=max(all.tss)
-        acc=max(all.acc@y.values[[1]],na.rm=T)
-        kappa=max(all.kappa)
-      } else {
-        
-        if(crit=="pp=op"){
-          
-          thr=quantile(f,probs=1-mean(pa))
-          wi=which.min(abs(thr-z@cutoffs[[1]]))
-        
-        }else if(length(tre)!=0){
-          
-          wi=which.min(abs(tre-z@cutoffs[[1]]))
-        }
-        
-        ppv=all.ppv@y.values[[1]][wi]
-        tss=all.tss[wi]
-        acc=all.acc@y.values[[1]][wi]
-        kappa=all.kappa[wi]
+      if(crit=="maxTSS"){
+        thr=z@cutoffs[[1]][which.max(all.tss)]
 
+      } else if(crit=="pp=op"){
+        thr=quantile(f,probs=1-mean(pa))
+        
+      }else if(length(tre)!=0){
+        thr=tre
+        
       }
 
+    wi=which.min(abs(thr-z@cutoffs[[1]]))
+    ppv=all.ppv@y.values[[1]][wi]
+    tss=all.tss[wi]
+    acc=all.acc@y.values[[1]][wi]
+    kappa=all.kappa[wi]
+
     # Return evaluation metrics
-    weg=c(auc=auc,rmse=rmse,ppv=ppv,tss=tss,acc=acc,kappa=kappa)  
+    weg=c(auc=auc,rmse=rmse,ppv=ppv,tss=tss,acc=acc,kappa=kappa,threshold=as.numeric(thr))  
   
     return(weg)
     }

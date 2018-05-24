@@ -208,10 +208,10 @@ wsl.gbm<-function(pa=numeric(),
 }
 
 ### =========================================================================
-### define wsl.multi.fit function
+### define wsl.flex function
 ### =========================================================================
 
-wsl.multi.fit<-function(pa=numeric(), 
+wsl.flex<-function(pa=numeric(), 
                   env_vars=data.frame(),
                   taxon=character(),
                   replicatetype=character(),
@@ -302,7 +302,7 @@ sm=setMethod("summary",signature(object="wsl.fit"),definition=function(object){
   cat("\nMeta information: \n")
   df=as.data.frame(object@meta[c("author","date","project")])  
   
-  if(as.character(object@call)[1]=="wsl.multi.fit"){
+  if(as.character(object@call)[1]=="wsl.flex"){
     df$model_tags=paste(names(object@fits[[1]]),collapse=", ")
   } else {
     df$model_tags=object@meta["model_tag"]    

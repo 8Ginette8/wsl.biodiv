@@ -39,7 +39,7 @@ wsl.evaluate<-function(x,tester=data.frame(),thres=numeric(),crit="pp=op"){
     }
   }  
   
-  if(!(crit%in%c("pp=op","max","external"))){
+  if(!(crit%in%c("pp=op","maxTSS","external"))){
     stop("Invalid threshold criterion chosen!")
   }
   
@@ -147,4 +147,26 @@ sm=setMethod("summary",signature(object="wsl.evaluation"),definition=function(ob
   print(mn)
   
 })
+
+### =========================================================================
+### pull out mean thresholds from evaluation
+### =========================================================================
+
+get_thres=function(x){
+  
+  thrs=lapply(x@performance,function(y){
+    a=sapply(y,function(z){
+      return(z["threshold"])
+    })
+    return(a)
+  })
+  
+  mat=do.call("rbind",thrs)
+  
+  out=colMeans(mat)
+  
+  names(out)=gsub(".threshold","",names(out))
+  
+  return(out)
+}
 

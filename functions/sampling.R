@@ -211,20 +211,13 @@ prop.sampling=function(points,nsamples=1000,res=1,adj=.2){
   
   # Replace NA's with zero probability
   if(any(is.na(vls))){
-    vls[which(is.na(vls))]=0
+    vls[which(is.na(vls) | vls<0)]=0
   }
   
-  csu=cumsum(vls)/(max(cumsum(vls)))
+  # Sample from density distributions
+  pts=sample(1:length(vls),nsamples,prob=vls)
   
-  draws=runif(nsamples)
-  
-  pts=sapply(draws,function(x,csu){
-    diffe=csu-x
-    wi=which(diffe>0)
-    out=wi[which.min(diffe[wi])]
-    return(out)
-  },csu=csu)
-  
+  # Determine coordinates of samples
   indi=arrayInd(pts,.dim=rev(lo))
   pt.out=cbind(x[indi[,2]],y[indi[,1]])
   colnames(pt.out)=colnames(points)
