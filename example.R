@@ -37,7 +37,7 @@ library(ROCR)
 # source functions
 scr=list.files("functions/",full.names=T)
 
-for(i in 1:length(scr)){source(scr[i])}
+lapply(scr, source)
 
 ### =========================================================================
 ### Prepare data
