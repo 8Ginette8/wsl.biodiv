@@ -22,13 +22,13 @@ preps=function(env=parent.frame(),call){
   ### check input data
   ### ----------------
   
-  if(env$replicatetype%in%c("none","cv","block-cv","splitsample")==F){stop("Non-existing replicatetype!")}
+  if(env$replicatetype%in%c("none","cv","block-cv","splitsample")==FALSE){stop("Non-existing replicatetype!")}
   
   if(env$replicatetype=="block-cv" && is.na(env$strata)){stop("Stratum vector needed for block crossvalidation!")}
   
   if(env$replicatetype=="block-cv" && length(unique(env$strata))!=env$reps){stop("Stratum vector has wrong number of levels!")}
   
-  if(env$replicatetype%in%c("cv","block-cv","splitsample")==T && (is.na("reps") ==T || env$reps<2)){stop("Give reasonalbe number of replicates!")}
+  if(env$replicatetype%in%c("cv","block-cv","splitsample")==TRUE && (is.na("reps") ==TRUE || env$reps<2)){stop("Give reasonalbe number of replicates!")}
   
   if(env$replicatetype=="none" && env$reps>1){env$reps=1;warning("Replicate type is 'none' but multiple replicates were chosen - replicates are set to 1")}
   
@@ -84,7 +84,7 @@ preps=function(env=parent.frame(),call){
     
   } else if (env$replicatetype=="splitsample"){
     for (i in 1:env$reps){
-      chc=sample(1:nrow(dat),size=round(nrow(dat)*0.7),replace=F)
+      chc=sample(1:nrow(dat),size=round(nrow(dat)*0.7),replace=FALSE)
       obschoice[[i]]<-dat[chc,]
       testing[[i]]<-dat[-chc,]
     }
@@ -92,7 +92,7 @@ preps=function(env=parent.frame(),call){
   } else if (grepl("cv",env$replicatetype)){
     
     if(env$replicatetype=="cv"){
-      unistr=sample(1:5,size=nrow(dat),replace=T)      
+      unistr=sample(1:5,size=nrow(dat),replace=TRUE)      
     } else {
       unistr=env$strata   
     }
@@ -126,7 +126,7 @@ multi.input<-setClass("multi.input",slots=c(mod="character", # Model function
 ### =========================================================================
 # stores information in multi.input object
 
-multi=function(mod,args,tag="",step=F){
+multi=function(mod,args,tag="",step=FALSE){
   
   # Generate multi.input object
   out=multi.input()

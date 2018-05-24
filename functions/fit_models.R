@@ -30,10 +30,10 @@ wsl.glm<-function(pa=numeric(),
                   replicatetype=character(),
                   reps,
                   strata=NA,
-                  save=F,
+                  save=FALSE,
                   project=NA,
                   path=NA,
-                  step=F,
+                  step=FALSE,
                   mod_tag="",
                   ...){
 
@@ -46,7 +46,7 @@ wsl.glm<-function(pa=numeric(),
     modi=list()
     modi[[1]]=glm(...,data=lis$train[[i]])
     if(step){
-      modi[[1]]=stepAIC(modi[[1]],direction="both",trace=F)
+      modi[[1]]=stepAIC(modi[[1]],direction="both",trace=FALSE)
     }
     names(modi)=ifelse(mod_tag=="","glm",mod_tag)
     fits[[i]]<-modi
@@ -76,10 +76,10 @@ wsl.gam<-function(pa=numeric(),
                   replicatetype=character(),
                   reps,
                   strata=NA,
-                  save=F,
+                  save=FALSE,
                   project=NA,
                   path=NA,
-                  step=F,
+                  step=FALSE,
                   mod_tag="",
                   ...){
   
@@ -93,7 +93,7 @@ wsl.gam<-function(pa=numeric(),
     modi=list()
     modi[[1]]=gam(...,data=lis$train[[i]])
     if(step){
-      modi[[1]]=step(modi[[1]],direction="both",trace=F)
+      modi[[1]]=step(modi[[1]],direction="both",trace=FALSE)
     }
     names(modi)=ifelse(mod_tag=="","gam",mod_tag)
     fits[[i]]<-modi
@@ -121,7 +121,7 @@ wsl.maxent<-function(pa=numeric(),
                      replicatetype=character(),
                      reps,
                      strata=NA,
-                     save=F,
+                     save=FALSE,
                      project=NA,
                      path=NA,
                      mod_tag="",
@@ -149,7 +149,7 @@ wsl.maxent<-function(pa=numeric(),
     fits[[i]]<-modi
     
     # Remove Temporary folder for Maxent
-    unlink(me.temp.dir,recursive=T)
+    unlink(me.temp.dir,recursive=TRUE)
   }
   
   names(fits)=paste0("replicate_",sprintf("%02d",1:reps))
@@ -175,7 +175,7 @@ wsl.gbm<-function(pa=numeric(),
                   replicatetype=character(),
                   reps,
                   strata=NA,
-                  save=F,
+                  save=FALSE,
                   project=NA,
                   path=NA,
                   mod_tag="",
@@ -217,7 +217,7 @@ wsl.multi.fit<-function(pa=numeric(),
                   replicatetype=character(),
                   reps,
                   strata=NA,
-                  save=F,
+                  save=FALSE,
                   project=NA,
                   path=NA,
                   mod_args=list()){
@@ -270,7 +270,7 @@ wsl.multi.fit<-function(pa=numeric(),
       names(modi)[j]=ifelse(mod_args[[j]]@tag=="",paste0("model_",j),mod_args[[j]]@tag)
 
       if(mod_args[[j]]@step){
-        modi[[j]]=stepAIC(modi[[j]],direction="both",trace=F)
+        modi[[j]]=stepAIC(modi[[j]],direction="both",trace=FALSE)
       }
     }
     

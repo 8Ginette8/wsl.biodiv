@@ -59,6 +59,7 @@ form.glm=as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="
 
 # Try out wsl.glm funcion
 modi1=wsl.glm(pa=Anguilla_train$Angaus,
+<<<<<<< HEAD
               env_vars = env,
               taxon="Angaus",
               replicatetype="cv",
@@ -68,6 +69,17 @@ modi1=wsl.glm(pa=Anguilla_train$Angaus,
               formula=form.glm,
               family="binomial",
               step=TRUE)
+=======
+             env_vars = env,
+             taxon="Angaus",
+             replicatetype="cv",
+             reps=5,
+             project="prototest",
+             mod_tag="test-glm",
+             formula=form.glm,
+             family="binomial",
+             step=TRUE)
+>>>>>>> b3bb29609314c9d838078e8b57768d1ddc99c944
 
 # Try out custom summary function
 summary(modi1)
@@ -89,6 +101,7 @@ form.gam=as.formula(paste("Presence~",paste(paste0("s(",vrs,")"),collapse="+")))
 
 # Try out wsl.glm funcion
 modi2=wsl.gam(pa=Anguilla_train$Angaus,
+<<<<<<< HEAD
               env_vars = env,
               taxon="Angaus",
               replicatetype="splitsample",
@@ -98,6 +111,17 @@ modi2=wsl.gam(pa=Anguilla_train$Angaus,
               formula=form.gam,
               family="binomial",
               step=FALSE)
+=======
+             env_vars = env,
+             taxon="Angaus",
+             replicatetype="splitsample",
+             reps=3,
+             project="prototest",
+             mod_tag="test-gam",
+             formula=form.gam,
+             family="binomial",
+             step=FALSE)
+>>>>>>> b3bb29609314c9d838078e8b57768d1ddc99c944
 
 # Try out custom summary function
 summary(modi2)
@@ -186,10 +210,17 @@ form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 
 modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE),
             multi("gbm",list(formula=form.gbm,
+<<<<<<< HEAD
                              distribution = "bernoulli",
                              interaction.depth = 1,
                              shrinkage=.01,
                              n.trees = 3500),"gbm-simple"),
+=======
+                           distribution = "bernoulli",
+                           interaction.depth = 1,
+                           shrinkage=.01,
+                           n.trees = 3500),"gbm-simple"),
+>>>>>>> b3bb29609314c9d838078e8b57768d1ddc99c944
             multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE),
             multi("maxent",list(args=feat),"mxe-simple"),
             multi("randomForest",list(formula=form.gbm,ntree=500),"waud"),
