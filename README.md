@@ -125,7 +125,7 @@ Create a multi.input object that efficiently stores model specifications
 #### Output
 Object of class multi
 
-### Block-wise split training data
+### Block-wise split data into training and testing
 
 - __make_blocks__
 
@@ -133,29 +133,29 @@ Creates a stratum vector based on a data.frame with n columns. If the data.frame
 
 #### Arguments
 
-- nstrata: number of approximately equal-sized classes returned. Used to separate groups in block-cross validation
-- df: data.frames with n columns containing critera for cluster building. Not necessary if argument npoints is supplied
+- nstrata: number of approximately equal-sized classes to separate groups in block-cross validation
+- df: data.frame with n columns containing critera for cluster building. Not necessary if argument npoints is supplied
 - nclusters: number of clusters based on which strata should be built. Minimum the same number as starta, maxuimum nrow(df)/10
-- npoints: optional argument if df is not supplied. For how many points should random sampling be made?
+- npoints: optional argument if 'df' is not supplied. For how many points should random sampling be made?
 
 #### Output
 Vector of length nrow(df) or npoints, with integers representing different strata
 
-### Sample pseudo-absences proportional to presence-distribution
+### Sample pseudo-absences proportional to presence point distribution
 
 - __prop.sampling__
 
-Uses the 'density' function from the package spatstat to create a density surface of the supplied point pattern and samples pseudo-absences from that density-distribution.
+Uses the 'density' function from the package spatstat to create a density surface of the supplied point pattern and samples pseudo-absences from this density-distribution.
 
 #### Arguments
 
 - points: matrix or data.frame with column names 'x' and 'y' assumed to be on the same scale and metric distances (m, km,...)
 - nsamples: number of pseudoabsences to be generated
 - res: resolution of the denstiy grid from which pseudo-absences are drawn. default (1) corresponds to 1000 cells on the x-axis
-- ...: arguments passed directly to the 'density' function from package spatstat. Note in particluar the argument 'adjust' which controls the kernel size in the density interpolation.
+- ...: arguments passed on to the 'density' function from package spatstat. Note in particluar the argument 'adjust' which controls the kernel size in the density interpolation.
 
 #### Output
-nsamples x 2 natrix with drawn psuedo-absences
+nsamples x 2 matrix with drawn psuedo-absences
 
 ## Helper functions (not to be called directly by the user)
 
