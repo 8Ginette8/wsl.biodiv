@@ -82,7 +82,7 @@ Print summary of wsl.evaluation objects
 
 ### Obtain thresholds from evaluation object
 
--__get_thres__
+- __get_thres__
 
 Extracts thresholds from wsl.evaluation objects and names them so they can be fed to the wsl.predict function. At the moment only averages over replicates can be obtained.
 
@@ -127,7 +127,7 @@ Object of class multi
 
 ### Block-wise split training data
 
--__make_blocks__
+- __make_blocks__
 
 Creates a stratum vector based on a data.frame with n columns. If the data.frame has one column strata are created based on clusters separated by quantiles. If the data.frame has two or more columns, strata ere created based on k-medoid clusters (function 'pam' from package cluster). Instead of a data.frame also the argument 'npoints' can be provided, then groups are created by random sampling. An opitimization algorithm (function 'gridSearch' from package NMOF) optimizes for equal stratum sizes. 
 
@@ -143,7 +143,7 @@ Vector of length nrow(df) or npoints, with integers representing different strat
 
 ### Sample pseudo-absences proportional to presence-distribution
 
--__prop.sampling__
+- __prop.sampling__
 
 Uses the 'density' function from the package spatstat to create a density surface of the supplied point pattern and samples pseudo-absences from that density-distribution.
 
