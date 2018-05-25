@@ -184,8 +184,8 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   xrng[2]=ceiling(xrng[2]/10^myoom)*10^myoom
   
   yrng=range(points$y)
-  yrng[1]=floor(yrng[1]/100)*100
-  yrng[2]=ceiling(yrng[2]/100)*100
+  yrng[1]=floor(yrng[1]/10^myoom)*10^myoom
+  yrng[2]=ceiling(yrng[2]/10^myoom)*10^myoom
   
   owi=owin(xrange=xrng,yrange=yrng)
   
