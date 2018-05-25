@@ -23,27 +23,24 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
     stop("Please supply number of points if no data.frame is supplied")
   }
   
+  ### ------------------------
+  ### generate clusters
+  ### ------------------------
+  
   if(nrow(df)==0){
-    
-    ### ------------------------
-    ### do ordinary sampling if no strata are supplied
-    ### ------------------------
-    
+ 
+    ### do ordinary sampling if no strata are supplied   
     out.strat=sample(rep(1:nstrat,ceiling(npoints/nstrat)),size=npoints)
     
   } else {
-    
-    ### ------------------------
-    ### do stratification based on kmedoid clustering
-    ### ------------------------
-    
+       
     # check for reasonable number of boxes
     if(nrow(df)<10*nclusters){
       stop("Too many boxes required!")
     }
     
     if(ncol(df)==1){
-      
+      ### do quantile-based clustering if df contains only one column
       clist=as.numeric(cut(df[,1],breaks=quantile(df[,1],probs=0:(nclusters)/(nclusters)),right=F))
       
       
@@ -52,7 +49,7 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
       # Scale input data
       scd=apply(df,2,scale)
       
-      # do kmedoid clustering
+      # do kmedoid clustering for 2 or more columns in df
       kmed=pam(scd,k=nclusters,metric="euclidean")
       
       # get clusters
@@ -89,7 +86,6 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
         } else {
           j=(nstrat+1)-round(1+nstrat*((i-1)/nstrat-(floor((i-1)/nstrat))))
         }
-        
         # add cluster
         grps[[j]]=append(grps[[j]],tbl[i])
         
@@ -121,7 +117,6 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
  
   # return result
   return(out.strat)
-  
 }
 
 ### =========================================================================
@@ -187,9 +182,8 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   yrng[1]=floor(yrng[1]/10^myoom)*10^myoom
   yrng[2]=ceiling(yrng[2]/10^myoom)*10^myoom
   
-  owi=owin(xrange=xrng,yrange=yrng)
-  
   # Define Point Pattern object to calculate 
+  owi=owin(xrange=xrng,yrange=yrng)
   myppp=ppp(x=points[,"x"],y=points[,"y"],window = owi)
   
   ### ------------------------
@@ -210,7 +204,7 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   vls=as.vector(dens$v)
   
   # Replace NA's with zero probability
-  if(any(is.na(vls))){
+  if(any(is.na(vls)) || any(vls<0)){
     vls[which(is.na(vls) | vls<0)]=0
   }
   
