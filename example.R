@@ -279,10 +279,10 @@ plot(env[,c(1,3)],col=strt.6)
 load("mypts.RData")
 
 # Samples with decreasing density kernel length
-pseu.1=prop.sampling(points=my.pts,nsamples=10000,adj=1,res=1)
-pseu.2=prop.sampling(points=my.pts,nsamples=10000,adj=.5,res=1)
-pseu.3=prop.sampling(points=my.pts,nsamples=10000,adj=.2,res=1)
-pseu.4=prop.sampling(points=my.pts,nsamples=10000,adj=.1,res=1)
+pseu.1=prop.sampling(points=my.pts,nsamples=10000,adjust=1,res=1)
+pseu.2=prop.sampling(points=my.pts,nsamples=10000,adjust=.5,res=1)
+pseu.3=prop.sampling(points=my.pts,nsamples=10000,adjust=.2,res=1)
+pseu.4=prop.sampling(points=my.pts,nsamples=10000,adjust=.1,res=1)
 
 par(mfrow=c(2,2))
 

@@ -156,7 +156,7 @@ optme=function(x,nms,grps,tot){
 ### sampling proportional to presence observation distribution
 ### =========================================================================
 
-prop.sampling=function(points,nsamples=1000,res=1,adj=.2){
+prop.sampling=function(points,nsamples=1000,res=1,...){
   
   ### ------------------------
   ### check input data
@@ -201,7 +201,7 @@ prop.sampling=function(points,nsamples=1000,res=1,adj=.2){
   x=seq(xrng[1],xrng[2],length.out = lo[1])
   y=seq(yrng[1],yrng[2],length.out = lo[2])
   
-  dens=density(myppp,adjust=adj,xy=list(x=x,y=y))
+  dens=density(myppp,xy=list(x=x,y=y),...)
   
   ### ------------------------
   ### Draw locations proportional to point density
