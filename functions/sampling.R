@@ -41,7 +41,11 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
     
     if(ncol(df)==1){
       ### do quantile-based clustering if df contains only one column
-      clist=as.numeric(cut(df[,1],breaks=quantile(df[,1],probs=0:(nclusters)/(nclusters)),right=F))
+      rngi=quantile(df[,1],probs=0:(nclusters)/(nclusters))
+      rngi[1]=rngi[1]-1
+      rngi[length(rngi)]=rngi[length(rngi)]+1
+      
+      clist=as.numeric(cut(df[,1],breaks=rngi,right=TRUE))
       
       
     } else {
@@ -64,55 +68,64 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
     ### regularly assign clusters to strata
     ### ------------------------
     
-    # prepare strata layers
-    grps=rep(list(numeric()),nstrat)
-    
-    # for the clusters with many observations
-    # distribute them regularly among strata but keep
-    # last six clusters for estimating most 
-    # regular distribution
-    
-    if(length(tbl)>6){
+    if(nclusters != nstrat){
       
-      for(i in 1:(length(tbl)-6)){
+      # prepare strata layers
+      grps=rep(list(numeric()),nstrat)
+      
+      # for the clusters with many observations
+      # distribute them regularly among strata but keep
+      # last six clusters for estimating most 
+      # regular distribution
+      
+      if(length(tbl)>6){
         
-        # determine to which stratum the cluster should be
-        # added
-        fl=(floor((i-1)/nstrat))
-        
-        
-        if(fl%%2==0){
-          j=round(1+nstrat*((i-1)/nstrat-(floor((i-1)/nstrat))))
-        } else {
-          j=(nstrat+1)-round(1+nstrat*((i-1)/nstrat-(floor((i-1)/nstrat))))
+        for(i in 1:(length(tbl)-6)){
+          
+          # determine to which stratum the cluster should be
+          # added
+          fl=(floor((i-1)/nstrat))
+          
+          
+          if(fl%%2==0){
+            j=round(1+nstrat*((i-1)/nstrat-(floor((i-1)/nstrat))))
+          } else {
+            j=(nstrat+1)-round(1+nstrat*((i-1)/nstrat-(floor((i-1)/nstrat))))
+          }
+          # add cluster
+          grps[[j]]=append(grps[[j]],tbl[i])
+          
         }
-        # add cluster
-        grps[[j]]=append(grps[[j]],tbl[i])
-        
       }
+      
+      # prepare for optimal distribution of last 6 clusters
+      vlis=factor(1:nstrat,levels=1:nstrat)
+      prs=rep(list(vlis),min(length(tbl),6))
+      sstab=tbl[max(1,(length(tbl)-5)):length(tbl)]
+      
+      # Run brute-forcing gridSearch obtimization
+      srch=gridSearch(levels=prs,fun=optme,nms=as.vector(sstab),grps=grps,tot=sum(tbl))
+      
+      # pull out results
+      wi=as.numeric(as.character(srch$minlevels))
+      
+      # combine results with predistributed clusters
+      for(i in 1:length(grps)){
+        grps[[i]]=append(grps[[i]],sstab[wi==i])
+      }
+      
+      # define vector with output strata
+      out.strat=rep(NA,nrow(df))
+      for(i in 1:length(grps)){
+        out.strat[which(as.character(clist)%in%names(grps[[i]]))]=i
+      }
+      
+    } else {
+      # if as many strata as clusters are required, simply return clusters
+      out.strat=clist
+      
     }
     
-    # prepare for optimal distribution of last 6 clusters
-    vlis=factor(1:nstrat,levels=1:nstrat)
-    prs=rep(list(vlis),min(length(tbl),6))
-    sstab=tbl[max(1,(length(tbl)-5)):length(tbl)]
-    
-    # Run brute-forcing gridSearch obtimization
-    srch=gridSearch(levels=prs,fun=optme,nms=as.vector(sstab),grps=grps,tot=sum(tbl))
-    
-    # pull out results
-    wi=as.numeric(as.character(srch$minlevels))
-    
-    # combine results with predistributed clusters
-    for(i in 1:length(grps)){
-      grps[[i]]=append(grps[[i]],sstab[wi==i])
-    }
-    
-    # define vector with output strata
-    out.strat=rep(NA,nrow(df))
-    for(i in 1:length(grps)){
-      out.strat[which(as.character(clist)%in%names(grps[[i]]))]=i
-    }
   }
  
   # return result
