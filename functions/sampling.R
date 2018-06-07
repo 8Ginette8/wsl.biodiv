@@ -209,6 +209,7 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   y=seq(yrng[1],yrng[2],length.out = lo[2])
   
   dens=density(myppp,xy=list(x=x,y=y),...)
+  rdens=coerce()
   
   ### ------------------------
   ### Draw locations proportional to point density
@@ -227,6 +228,72 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   # Determine coordinates of samples
   indi=arrayInd(pts,.dim=rev(lo))
   pt.out=cbind(x[indi[,2]],y[indi[,1]])
+  colnames(pt.out)=colnames(points)
+  
+  return(pt.out)
+  
+}
+
+### =========================================================================
+### sampling proportional to presence observation distribution
+### =========================================================================
+
+pseu.targr=function(points,nsamples=1000,env.layer,...){
+  
+  ### ------------------------
+  ### check input data
+  ### ------------------------
+  
+  if(ncol(points)!=2 || !all(colnames(points)%in%c("x","y"))){
+    
+    stop("Supplied points should be a data.frame/matrix with two columns named x and y!")
+  }
+  
+  if(!(class(env.layer)%in%c("RasterBrick","RasterStack","RasterLayer"))){
+    stop("env.layer should be of class RasterBrick, RasterStack or RasterLayer!")
+  }
+  
+  ### ------------------------
+  ### Prepare point pattern object
+  ### ------------------------
+  
+  # Define Point Pattern object to calculate
+  xt=extent(env.layer)
+  owi=owin(xrange=c(xt@xmin,xt@xmax),yrange=c(xt@ymin,xt@ymax))
+  myppp=ppp(x=points[,"x"],y=points[,"y"],window = owi)
+  
+  ### ------------------------
+  ### Generate 'im' object with density info
+  ### ------------------------
+  
+  x=sort(unique(coordinates(env.layer)[,1]))
+  y=sort(unique(coordinates(env.layer)[,2]))
+  
+  dens=density(myppp,xy=list(x=x,y=y),...)
+  rdens=raster(env.layer)
+  values(rdens)=dens$v[nrow(dens$v):1,]
+  
+  ### ------------------------
+  ### Draw locations proportional to point density
+  ### ------------------------
+  
+  vls=values(rdens)*values(raster::area(rdens))
+  
+  # Only sample points where env data coverage is complete
+  na.locs=apply(values(env.layer),1,function(x) any(is.na(x)))
+  vls[which(na.locs)]=0
+  
+  # Replace NA's with zero probability
+  if(any(is.na(vls)) || any(vls<0)){
+    vls[which(is.na(vls) | vls<0)]=0
+  }
+  
+  # Sample from density distributions
+  vls=vls/sum(vls)
+  pts=sample(1:length(vls),nsamples,prob=vls,replace=T)
+  
+  # Determine coordinates of samples
+  pt.out=coordinates(rdens)[pts,]
   colnames(pt.out)=colnames(points)
   
   return(pt.out)
