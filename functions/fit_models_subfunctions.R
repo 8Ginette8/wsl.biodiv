@@ -99,7 +99,7 @@ preps=function(env=parent.frame(),call){
     
     for (i in 1:env$reps){
       obschoice[[i]]<-dat[which(unistr!=unique(unistr)[i]),]
-      testing[[i]]<-dat[which(unistr!=unique(unistr)[i]),]
+      testing[[i]]<-dat[which(unistr==unique(unistr)[i]),]
     }
     
   }
@@ -118,7 +118,8 @@ preps=function(env=parent.frame(),call){
 multi.input<-setClass("multi.input",slots=c(mod="character", # Model function
                                             args="list", # Model function arguments
                                             tag="character", # Model set-up name
-                                            step="logical")) # Should step function be added?
+                                            step="logical", # Should step function be added?
+                                            weight="logical")) # Should observations be weighted?
                                                              # (Applies mainly to GLM)
 
 ### =========================================================================
@@ -126,7 +127,7 @@ multi.input<-setClass("multi.input",slots=c(mod="character", # Model function
 ### =========================================================================
 # stores information in multi.input object
 
-multi=function(mod,args,tag="",step=FALSE){
+multi=function(mod,args,tag="",step=FALSE,weight=FALSE){
   
   # Generate multi.input object
   out=multi.input()
@@ -134,6 +135,7 @@ multi=function(mod,args,tag="",step=FALSE){
   out@step=step
   out@args=args
   out@mod=mod
+  out@weight=weight
   
   return(out)
 }

@@ -192,14 +192,17 @@ thr.4=get_thres(eval4)
 form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 
 modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE),
-            multi("gbm",list(formula=form.gbm,
-                             distribution = "bernoulli",
-                             interaction.depth = 1,
-                             shrinkage=.01,
-                             n.trees = 3500),"gbm-simple"),
-            multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE),
-            multi("maxent",list(args=feat),"mxe-simple"),
-            multi("randomForest",list(formula=form.gbm,ntree=500),"waud"),
+            # multi("gbm",list(formula=form.gbm,
+            #                  distribution = "bernoulli",
+            #                  interaction.depth = 1,
+            #                  shrinkage=.01,
+            #                  n.trees = 3500),"gbm-simple"),
+            # multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE),
+            # multi("maxent",list(args=feat),"mxe-simple"),
+            multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
+            multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=20),"waud2"),
+            multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=50),"waud3"),
+            multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=100),"waud4"),
             multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE))
 
 # Try out wsl.glm funcion

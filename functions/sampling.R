@@ -13,7 +13,7 @@
 ### cv blocks
 ### =========================================================================
 
-make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
+make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA,pres=numeric()){
   
   ### ------------------------
   ### check input data
@@ -53,12 +53,33 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
       # Scale input data
       scd=apply(df,2,scale)
       
-      # do kmedoid clustering for 2 or more columns in df
-      kmed=pam(scd,k=nclusters,metric="euclidean")
       
-      # get clusters
-      clist=kmed$clustering
-      
+      if(length(pres)==0){
+        
+        # do kmedoid clustering for 2 or more columns in df
+        kmed=pam(scd,k=nclusters,metric="euclidean")
+        
+        # get clusters
+        clist=kmed$clustering
+        
+        
+        
+      } else {
+        
+        # do kmedoid clustering for 2 or more columns in df
+        kmed=pam(scd[which(pres==1),],k=nclusters,metric="manhattan")
+        
+        knnab=knn(train=scd[which(pres==1),],test=scd[which(pres==0),],cl=kmed$clustering)
+        
+
+        clist=kmed$clustering 
+
+        cliful=rep(NA,nrow(scd))
+        cliful[which(pres==1)]=kmed$clustering 
+        cliful[which(pres==0)]=as.numeric(knnab)
+
+
+      }
     }
     
     # sort obtained clusters
@@ -117,12 +138,20 @@ make_blocks<-function(nstrat=4,df=data.frame(),nclusters=nstrat*5,npoints=NA){
       # define vector with output strata
       out.strat=rep(NA,nrow(df))
       for(i in 1:length(grps)){
-        out.strat[which(as.character(clist)%in%names(grps[[i]]))]=i
+        if(length(pres)==0){
+              out.strat[which(as.character(clist)%in%names(grps[[i]]))]=i
+          } else{
+              out.strat[which(as.character(cliful)%in%names(grps[[i]]))]=i
+        }
       }
       
     } else {
       # if as many strata as clusters are required, simply return clusters
-      out.strat=clist
+      if(length(pres)==0){
+        out.strat=clist
+      } else{
+        out.strat=cliful       
+      }
       
     }
     
@@ -299,3 +328,70 @@ pseu.targr=function(points,nsamples=1000,env.layer,...){
   return(pt.out)
   
 }
+
+# # get clusters
+# dsts=apply(kmed$medoids,1,function(x,scd){
+#   
+#   y=sqrt((x[1]-scd[,1])^2+(x[2]-scd[,2])^2)
+#   z=rank(y,ties.method="random")
+#   out=order(z)
+#   return(out)
+# },scd=scd)
+
+
+
+#   for(i in 2:nrow(dsts)){
+# 
+#     for(j in 1:ncol(dsts)){
+#       
+#       if(!is.na(dsts[i,j])){
+#         
+#         not.ready=T
+#         while(not.ready){
+#           
+#           if(dsts[i,j]%in%dsts[1:(i-1),]){
+#             dsts[i:nrow(dsts),j]=c(dsts[(i+1):nrow(dsts),j],NA)
+#           } else {
+#             not.ready=F
+#           }
+#           
+#         }
+#         
+#       }
+# 
+#     }
+#     
+#     if(any(table(dsts[i,])>1)){
+#       
+#       not.ready=T
+#       while(not.ready){
+#         if(any(table(dsts[i,])>1)){
+#           wi=names(table(dsts[i,]))[which(table(dsts[i,])>1)]
+#           
+#           for(k in 1:length(wi)){
+#             cx=sample(which(dsts[i,]==as.numeric(wi[k])),length(which(dsts[i,]==as.numeric(wi[k]))-1))
+#             
+#             for(l in 1:length(cx)){
+# 
+#               dsts[i:nrow(dsts),cx[l]]=c(dsts[(i+1):nrow(dsts),cx[l]],NA)
+#               nr=T
+#               while(nr){
+#                 if(dsts[i,cx[l]]%in%dsts[1:(i-1),] && !is.na(dsts[i,cx[l]])){
+#                   dsts[i:nrow(dsts),cx[l]]=c(dsts[(i+1):nrow(dsts),cx[l]],NA)
+#                 } else {
+#                   nr=F
+#                 }
+#               }
+# 
+#             }
+#           }
+#           
+#         } else {
+#           not.ready=F
+#         }
+#       }
+#     }
+#   }
+# }
+# 
+

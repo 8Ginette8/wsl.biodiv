@@ -63,8 +63,8 @@ wsl.predict<-function(x,predat=data.frame(),thres=numeric()){
       # Convert to binary predictions if thresholds were supplied
       if(length(thres)>0){
         the.tre=thres[which(names(thres)==names(x@fits[[i]])[j])]
-        pred[which(pred>=the.tre)]<-1
-        pred[which(pred<the.tre)]<-0
+        pred[pred>=the.tre]<-1
+        pred[pred<the.tre]<-0
       }
      
       lisa[[j]]<-pred

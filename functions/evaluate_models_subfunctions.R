@@ -100,33 +100,70 @@ prd=function(mod,tst){
   # Generate probabilistic precitions
   if("MaxEnt"%in%class(mod)){
     
-    pred<-predict(mod,tst)
+    pred<-df_or_rast(mod,tst)
     
   } else if("glm"%in%class(mod)){
     
-    pred<-predict(mod,
-                  newdata=tst,
+    pred<-df_or_rast(mod=mod,
+                  nwdat=tst,
                   type="response")
     
   } else if("gbm"%in%class(mod)){
     
-    pred<-predict(mod,
-                  newdata=tst,
+    pred<-df_or_rast(mod,
+                  nwdat=tst,
                   n.trees=mod$n.trees,
                   type="response")
     
   } else if("randomForest"%in%class(mod)){
     
-    pred<-predict(mod,
-                  newdata=tst,
-                  type="prob")[,2]
+    pred<-df_or_rast(mod,
+                  nwdat=tst,
+                  type="prob")
   }
   
   # Convert to numeric
-  pred<-as.numeric(pred)
+  if(class(tst)=="data.frame"){
+    pred<-as.numeric(pred)
+  }
   
   return(pred)
   
 }
 
+### =========================================================================
+### predict df or raster
+### =========================================================================
 
+df_or_rast=function(mod,nwdat,...){
+
+  if("randomForest"%in%class(mod)){
+    index=2
+  }else{
+    index=1
+  }
+
+  
+  if(class(nwdat)%in%c("RasterStack","RasterBrick","RasterLayer")){
+    
+    add.arg=list(...)
+    beginCluster(5)
+    cl=getCluster()
+    clusterExport(cl,list=list("nwdat","mod","add.arg","index"),envir=environment())
+    out=clusterR(nwdat,predict,args=c(list(model=mod,index=index),add.arg))
+    
+    returnCluster()
+    # out=raster::predict(nwdat,mod,...)
+    endCluster()
+    
+  } else if(class(nwdat)=="data.frame"){
+    out=predict(mod,newdata=nwdat,...)
+    
+    if("randomForest"%in%class(mod)){
+      out=out[,2]
+    }
+  }
+
+  return(out)
+  
+}

@@ -260,6 +260,15 @@ wsl.flex<-function(pa=numeric(),
         
         mod_args[[j]]@args$data=lis$train[[i]]
         
+        # Make weight vector
+        wi=which(mod_args[[j]]@args$data$Presence==1)
+        wt=rep(1,nrow(mod_args[[j]]@args$data))
+        wt[wi]<-round((nrow(mod_args[[j]]@args$data)-length(wi))/length(wi))
+        
+        if(mod_args[[j]]@weight){
+          mod_args[[j]]@args$weights=wt
+        }
+        
         if(mod_args[[j]]@mod=="randomForest"){
           mod_args[[j]]@args$data$Presence=as.factor(mod_args[[j]]@args$data$Presence)
         }
