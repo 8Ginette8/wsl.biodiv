@@ -238,7 +238,6 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
   y=seq(yrng[1],yrng[2],length.out = lo[2])
   
   dens=density(myppp,xy=list(x=x,y=y),...)
-  rdens=coerce()
   
   ### ------------------------
   ### Draw locations proportional to point density

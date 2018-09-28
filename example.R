@@ -298,3 +298,9 @@ points(my.pts)
 plot(pseu.4,pch=16,col="red",cex=.5)
 points(my.pts)
 
+### =========================================================================
+### Pseudoabsence sampling with the target group approach
+### =========================================================================
+
+
+
