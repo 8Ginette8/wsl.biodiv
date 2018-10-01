@@ -266,7 +266,7 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
 ### sampling proportional to presence observation distribution
 ### =========================================================================
 
-pseu.targr=function(points,nsamples=1000,env.layer,...){
+pseu.targr=function(points,nsamples=1000,env.layer,mask=NULL,...){
   
   ### ------------------------
   ### check input data
@@ -279,6 +279,20 @@ pseu.targr=function(points,nsamples=1000,env.layer,...){
   
   if(!(class(env.layer)%in%c("RasterBrick","RasterStack","RasterLayer"))){
     stop("env.layer should be of class RasterBrick, RasterStack or RasterLayer!")
+  }
+  
+  ### ------------------------
+  ### Insert a mask argument to create NAs where we don't want the sampling to be done
+  ### Necessary argument = a spatial object
+  ### ------------------------
+
+  if(!(class(mask)[1]%in%c("NULL","SpatialPolygons","SpatialPoints","SpatialLines",
+    "SpatialPolygonsDataFrame","SpatialPointsDataFrame","SpatialLinesDataFrame"))){
+    stop("The mask should be of class SpatialPolygons, SpatialPoints or SpatialLines!")
+  }
+
+  if(!is.null(mask)){
+    env.layer=mask(env.layer,mask)
   }
   
   ### ------------------------
@@ -308,8 +322,8 @@ pseu.targr=function(points,nsamples=1000,env.layer,...){
   vls=values(rdens)*values(raster::area(rdens))
   
   # Only sample points where env data coverage is complete
-  na.locs=apply(values(env.layer),1,function(x) any(is.na(x)))
-  vls[which(na.locs)]=0
+  na.locs=is.na(values(env.layer))
+  vls[na.locs]=0
   
   # Replace NA's with zero probability
   if(any(is.na(vls)) || any(vls<0)){
