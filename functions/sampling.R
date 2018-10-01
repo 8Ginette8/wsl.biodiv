@@ -308,8 +308,12 @@ pseu.targr=function(points,nsamples=1000,env.layer,...){
   vls=values(rdens)*values(raster::area(rdens))
   
   # Only sample points where env data coverage is complete
-  na.locs=apply(values(env.layer),1,function(x) any(is.na(x)))
-  vls[which(na.locs)]=0
+  
+  # na.locs=apply(values(env.layer),1,function(x) any(is.na(x)))
+  # vls[which(na.locs)]=0
+  
+  na.locs=is.na(values(env.layer))
+  vls[na.locs]=0
   
   # Replace NA's with zero probability
   if(any(is.na(vls)) || any(vls<0)){
