@@ -19,16 +19,17 @@ library(doParallel)
 # "object" = list() for SpatialPoints
 # points, species, val, weight should be of same length
 
-# points    =====> matrix/df of xy coords; SpatialPoints; SpatialPoints list
-# val       =====> "object" of presences-absences, or of other spatial infos
-# species   =====> vector of species names or other infos
+# points    	=====> matrix/df of xy coords; SpatialPoints; SpatialPoints list
+# val       	=====> "object" of presences-absences, or of other spatial infos
+# species   	=====> vector of species names or other infos
 # ras 		  =====> one RasterLayer or a list of RasterLayer
 # rasCLASS	=====> a vector associating a Class ID to the raster(s)
 # mlinear	  =====> using lm() or glm() depending on the type of data
 # glmMODE	  =====> choosing the glm link function: "binomial" (defaut) or "poisson"
 # weight  	=====> "object" of weight information associated with "val" to use in the model fit
 # poly 	 	  =====> using the polynomial quadratic function if we want a more flexible fit
-# cores     =====> number of cores for parallelisation of extract()
+# polyBRUT  	=====> Force poly function when NAs are found
+# cores     	=====> number of cores for parallelisation of extract()
 # ...		    =====> additional arguments to add to lm() or glm() function
 
 ### ==================================================================
@@ -37,7 +38,7 @@ library(doParallel)
 
 wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 	mlinear=FALSE,glmMODE="binomial",weight=NULL,poly=FALSE,
-	parallel=FALSE,cores=detectCores()/2,...)
+	polyBRUT=FALSE,parallel=FALSE,cores=detectCores()/2,...)
 {
 	### ==================================================================
 	### Error handlings
@@ -227,7 +228,12 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 			inputName=paste0("val.X$",names(val.X))
 
 			if (poly) {
-				form.m=lapply(inputName,function(x) as.formula(paste("param[[2]]",paste("poly(",x,",2)"),sep="~")))
+				if (!polyBRUT)
+				{
+					form.m=lapply(inputName,function(x) as.formula(paste("param[[2]]",paste("poly(",x,",2)"),sep="~")))
+				} else {
+					form.m=lapply(inputName,function(x) as.formula(paste("param[[2]]",paste(x,"+ I(",x,"^2)"),sep="~")))
+				}
 			} else {
 				form.m=lapply(inputName,function(x) as.formula(paste("param[[2]]",paste(x),sep="~")))
 			}
