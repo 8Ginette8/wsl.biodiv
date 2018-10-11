@@ -267,14 +267,16 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 		# Do the summary
 		if (nrow(result)==1) {
 			meanSummary=NULL
+			sdSummary=NULL
 			row.names(result)="meanSummary"
 		} else {
 			# Creating a new row with the PPower summary
 			meanSummary=apply(result,2,mean)
+			sdSummary=apply(result,2,sd)
 		}
 
 		# Store species result for each assigned class of predictors
-		result2=rbind(result,meanSummary)
+		result2=rbind(result,meanSummary,sdSummary)
 		D1VAR[[i]]=result2
 	}
 	names(D1VAR)=VARclass
