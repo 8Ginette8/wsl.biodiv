@@ -211,6 +211,8 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 					} else {
 						val.X=foreach (k=1:length(VARn)) %do%
 						{
+							cat("extract",names(VARn[[k]]),"\n")
+							
 							out=extract(VARn[[k]],param[[1]],method="simple")
 							return(out)
 						}
