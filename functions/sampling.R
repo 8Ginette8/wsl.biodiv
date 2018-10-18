@@ -266,7 +266,7 @@ prop.sampling=function(points,nsamples=1000,res=1,...){
 ### sampling proportional to presence observation distribution
 ### =========================================================================
 
-pseu.targr=function(points,nsamples=1000,env.layer,mask=NULL,...){
+pseu.targr=function(points,nsamples=1000,p.avoid=NULL,env.layer,mask=NULL,...){
   
   ### ------------------------
   ### check input data
@@ -293,6 +293,17 @@ pseu.targr=function(points,nsamples=1000,env.layer,mask=NULL,...){
 
   if(!is.null(mask)){
     env.layer=mask(env.layer,mask)
+  }
+  
+  ### ------------------------
+  ### To avoid sampling P-Abs in cells where choosen coordinates fall
+  ### Necessary argument = same type as "points"
+  ### ------------------------
+
+  if (!is.null(p.avoid)){
+    if(ncol(p.avoid)!=2 || !all(colnames(p.avoid)%in%c("x","y"))){
+    stop("Parameter 'p.avoid' should be a data.frame/matrix with two columns named x and y!")
+    }
   }
   
   ### ------------------------
@@ -324,6 +335,15 @@ pseu.targr=function(points,nsamples=1000,env.layer,mask=NULL,...){
   # Only sample points where env data coverage is complete
   na.locs=is.na(values(env.layer))
   vls[na.locs]=0
+  
+  # Do not sample where your choosen presences points are
+  if (!is.null(p.avoid)){
+    # Check where on the rasters they occur
+    p.where=rasterize(p.avoid,env.layer, fun='count')
+    # Probability of 0 sampling on these locations
+    pres.locs=!is.na(values(p.where))
+    vls[pres.locs]=0
+  }
   
   # Replace NA's with zero probability
   if(any(is.na(vls)) || any(vls<0)){
