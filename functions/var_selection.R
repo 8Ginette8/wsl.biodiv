@@ -246,7 +246,7 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 				DR2=sapply(form.m,function(x) summary(lm(x,weights=param[[3]],...))$adj.r.squared)
 			} else {
 				cat("Calculating D2 adj.glm...",sep="","\n")
-				DR2=sapply(form.m,function(x) ecospat.adj.D2.glm(glm(x,weights=param[[3]],family=glmMODE,...)))
+				DR2=sapply(form.m,function(x) ecospat.adj.D2.glm(glm(x,weights=param[[3]],family=glmMODE,...)))*100
 			}
 
 			# Store
@@ -315,6 +315,9 @@ wsl.varKeep=function(PPower.object,ras,corTEST=0.7,...)
 		t1=as.numeric(PPower.object[[i]][Q1,])
 		t2=data.frame(PP=t1,VAR=colnames(PPower.object[[i]]),stringsAsFactors=F)
 		t3=t2[order(t2$PP,decreasing=T),]
+		
+		tref=t3
+		tref$rank=1:nrow(tref)
 
 		# Extract raster name(s)
 		
@@ -367,8 +370,11 @@ wsl.varKeep=function(PPower.object,ras,corTEST=0.7,...)
 		toKeep=toKeep[!is.na(toKeep)]
 
 		# Generates data.frames
-		r2=data.frame(Rank=1:length(toKeepNot),VAR=toKeepNot,stringsAsFactors=F)
-		r1=data.frame(Rank=1:length(toKeep),VAR=toKeep,stringsAsFactors=F)
+		r1=data.frame(VAR=toKeep,stringsAsFactors=F)
+		r1=merge(r1,tref,by="VAR",sort=FALSE,all.x=T)
+
+		r2=data.frame(VAR=toKeepNot,stringsAsFactors=F)
+		r2=merge(r2,tref,by="VAR",sort=FALSE,all.x=T)
 		
 		# Add description titles
 		toBeOrNot=list(r1,r2)
