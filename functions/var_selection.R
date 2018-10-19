@@ -299,7 +299,7 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 # corTEST	   =====> level of accepted correlation to select our predictors
 # ...		     =====> additional arguments to add to the cor() function
 
-wsl.varKeep=function(PPower.object,ras,corTEST=0.7,...)
+wsl.varKeep=function(PPower.object,ras,corTEST=0.7,vifTEST=NULL,...)
 {
 	# Looping over the PPower.object output of the varPPower function
 
@@ -387,7 +387,18 @@ wsl.varKeep=function(PPower.object,ras,corTEST=0.7,...)
 		names(toBeOrNot)=c("no_correlation_PPrank","correlation_PPrank")
 
 		# Store
-		perVAR[[i]]=toBeOrNot
+		if (!vifTEST) {
+			perVAR[[i]]=toBeOrNot
+		} else {
+
+			cat("vifTEST=TRUE","\n")
+
+			K=toBeOrNot$no_correlation_PPrank$VAR
+			rasK=sapply(rasterL,function(x) names(x) %in% K)
+			stacK=stack(rasterL[rasK])
+			toBeOrNot$VIFselect=vifstep(stacK)
+			perVAR[[i]]=toBeOrNot
+		}
 	}
 
 	# Add predictor classes description
