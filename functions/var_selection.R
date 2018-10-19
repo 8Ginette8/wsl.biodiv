@@ -311,10 +311,16 @@ wsl.varKeep=function(PPower.object,ras,corTEST=0.7,...)
 
 	# Focus on the summary line of our object and ordering
 
-		Q1=row.names(PPower.object[[i]]) %in% "meanSummary"
-		t1=as.numeric(PPower.object[[i]][Q1,])
-		t2=data.frame(PP=t1,VAR=colnames(PPower.object[[i]]),stringsAsFactors=F)
+		Q1a=row.names(PPower.object[[i]]) %in% "meanSummary"
+		t1a=as.numeric(PPower.object[[i]][Q1a,])
+
+		Q1b=row.names(PPower.object[[i]]) %in% "sdSummary"
+		t1b=as.numeric(PPower.object[[i]][Q1b,])
+
+		t2=data.frame(PP=t1a,SD=t1b,VAR=colnames(PPower.object[[i]]),stringsAsFactors=F)
 		t3=t2[order(t2$PP,decreasing=T),]
+
+		# Create duplicate
 		
 		tref=t3
 		tref$rank=1:nrow(tref)
