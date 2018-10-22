@@ -5,6 +5,7 @@ library(sp)
 library(ecospat)
 library(foreach)
 library(doParallel)
+library(usdm)
 
 ###############################
 ##### First function
