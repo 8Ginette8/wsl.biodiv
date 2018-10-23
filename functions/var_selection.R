@@ -39,7 +39,7 @@ library(usdm)
 
 wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 	mlinear=FALSE,glmMODE="binomial",weight=NULL,poly=FALSE,
-	polyBRUT=FALSE,parallel=FALSE,cores=detectCores()/2,...)
+	polyBRUT=FALSE,parallel=FALSE,parINFOS=NULL,cores=detectCores()/2,...)
 {
 	### ==================================================================
 	### Error handlings
@@ -132,17 +132,6 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 	}
 
 	### ==================================================================
-	### Infos parallelisation
-	### ==================================================================
-
-	if (parallel)
-	{
-		cat("Parallelisation is TRUE with",cores,"cores","\n")
-	} else {
-		cat("Parallelisation is FALSE","\n")
-	}
-
-	### ==================================================================
 	### Applying models
 	### ==================================================================
 
@@ -162,10 +151,23 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 			VARn=ras[Q2]
 		}
 
-		D2SP=list()
-
 		# Looping over the species
-		for (j in 1:length(spN))
+
+		if (parallel) {
+
+			cat("Parallelisation is TRUE with",cores,"cores","\n")
+			
+			cl <- makeCluster(cores,outfile=parINFOS)
+			registerDoParallel(cl)
+		
+		} else {
+			
+			cat("Parallelisation is FALSE","\n")
+
+			registerDoSEQ()
+		}
+
+		D2SP=foreach (j=1:length(spN),.packages=c("doParallel","foreach","raster","ecospat","sp")) %dopar%
 		{
 			cat("Processing species ","'",unique(species)[j],"'",
 				" (",j," out of ",length(spN)," Species)...",sep="","\n")
@@ -191,32 +193,13 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 
 				# Choosing to go Parallel
 				if (class(VARn) %in% "list") {
-					# TRUE
-					if (parallel)
+					
+					val.X=foreach (k=1:length(VARn)) %do%
 					{
-						# Creating a cluster with cpus
-						cl <- makeCluster(cores)
-						registerDoParallel(cl)
+						cat("extract",names(VARn[[k]]),"\n")
 
-						# Going Parallel
-						val.X=foreach (k=1:length(VARn),.packages=c("doParallel","foreach","raster")) %dopar%
-						{
-							out=extract(VARn[[k]],param[[1]],method="simple")
-							return(out)
-						}
-
-						# Closing the cluster
-						stopCluster(cl)
-
-					# FALSE	
-					} else {
-						val.X=foreach (k=1:length(VARn)) %do%
-						{
-							cat("extract",names(VARn[[k]]),"\n")
-							
-							out=extract(VARn[[k]],param[[1]],method="simple")
-							return(out)
-						}
+						out=extract(VARn[[k]],param[[1]],method="simple")
+						return(out)
 					}
 
 				# Simple extract in case of just one raster
@@ -251,8 +234,10 @@ wsl.varPPower=function(points,val,species=NULL,ras,rasCLASS=NULL,
 			}
 
 			# Store
-			D2SP[[j]]=DR2
+			return(DR2)
 		}
+
+		if (parallel) {stopCluster(cl)}
 
 		# Aggregating list and assigning infos
 		names(D2SP)=unique(species)
