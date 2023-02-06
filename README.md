@@ -15,7 +15,7 @@ library(wsl.biodiv)
 
 ## Ensemble model
 
-Load data
+Load package & data
 ``` r
 # Take anguilla data set from dismo package
 data("Anguilla_train")
