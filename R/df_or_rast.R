@@ -31,7 +31,7 @@ df_or_rast=function (mod, nwdat, clust, ...)
     }
   }
   else if (class(nwdat) == "data.frame") {
-    out = predict(mod, x = nwdat, ...)
+    out = predict(mod,nwdat, ...)
     if ("randomForest" %in% class(mod)) {
       out = out[, 2]
     }

@@ -7,7 +7,7 @@
 #'
 #' @author Philipp Brun
 #' @export
-ceval<-function(f,pa,tesdat,crit,tre=numeric()){
+ceval<-function(f,pa,crit,tre=numeric()){
 
   # If there are any presences in the evaluation data
   if(any(pa==1)){
