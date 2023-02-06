@@ -99,7 +99,7 @@
 #' modi3=wsl.gbm(pa=Anguilla_train$Angaus,
 #'               env_vars = env,
 #'               taxon="Angaus",
-#'               replicatetype="cv",
+#'               replicatetype="none",
 #'               reps=1,
 #'               project="prototest",
 #'               mod_tag="test-brt",
