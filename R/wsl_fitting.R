@@ -99,7 +99,7 @@
 #' modi3=wsl.gbm(pa=Anguilla_train$Angaus,
 #'               env_vars = env,
 #'               taxon="Angaus",
-#'               replicatetype="none",
+#'               replicatetype="cv",
 #'               reps=1,
 #'               project="prototest",
 #'               mod_tag="test-brt",
@@ -116,7 +116,7 @@
 #' summary(modi3@fits$replicate_01$`test-brt`)
 #'
 #' # Prepare external testing data
-#' tste=data.frame(Presence=Anguilla_train$Angaus,env)
+#' tste=data.frame(Presence=Anguilla_train$Angaus,CV=1,env)
 #'
 #' # Evaluate the model
 #' eval3=wsl.evaluate.pa(modi3,crit="maxTSS",tester=tste)
@@ -401,7 +401,7 @@ wsl.gbm<-function(x=numeric(),
   for(i in 1:reps){
 
     modi=list()
-    modi[[1]]=gbm(...,data=lis$train[[i]])
+    modi[[1]]=gbm::gbm(...,data=lis$train[[i]])
 
     names(modi)=ifelse(mod_tag=="","gbm",mod_tag)
     fits[[i]]<-modi
