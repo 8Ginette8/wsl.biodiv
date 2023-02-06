@@ -23,5 +23,5 @@ An S4 class to store pseudoabsence data
 }}
 
 \author{
-Philipp
+Philipp Brun
 }

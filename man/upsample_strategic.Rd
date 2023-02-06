@@ -25,6 +25,11 @@ Thin a spatial points object by number of points or minimum distance
 iteratively samples points and rejects them if min thist
 to all existing points i the sample are not respected
 }
+\references{
+Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+models in complex mountainous terrain. bioRxiv, 2022-03.
+}
 \author{
-Philipp
+Philipp brun
 }

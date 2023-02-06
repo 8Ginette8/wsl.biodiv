@@ -222,7 +222,7 @@ form.gbm=as.formula(Presence ~ .)
 modi3=wsl.gbm(pa=Anguilla_train$Angaus,
               env_vars = env,
               taxon="Angaus",
-              replicatetype="none",
+              replicatetype="cv",
               reps=1,
               project="prototest",
               mod_tag="test-brt",
@@ -239,7 +239,7 @@ summary(modi3)
 summary(modi3@fits$replicate_01$`test-brt`)
 
 # Prepare external testing data
-tste=data.frame(Presence=Anguilla_train$Angaus,env)
+tste=data.frame(Presence=Anguilla_train$Angaus,CV=1,env)
 
 # Evaluate the model
 eval3=wsl.evaluate.pa(modi3,crit="maxTSS",tester=tste)
@@ -283,15 +283,15 @@ thr.4=get_thres(eval4)
 form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 
 modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
-multi("gbm",list(formula=form.gbm,
-                 distribution = "bernoulli",
-                 interaction.depth = 1,
-                 shrinkage=.01,
-                 n.trees = 3500),"gbm-simple"),
-multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE)),
-multi("maxent",list(args=feat),"mxe-simple"),
-multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
-multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE,weight=TRUE)))
+   multi("gbm",list(formula=form.gbm,
+   distribution = "bernoulli",
+   interaction.depth = 1,
+   shrinkage=.01,
+   n.trees = 3500),"gbm-simple"), 
+   multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
+   multi("maxent",list(args=feat),"mxe-simple"),
+   multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
+   multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE,weight=TRUE))
 
 # Try out wsl.glm funcion
 modi5=wsl.flex(pa=Anguilla_train$Angaus,

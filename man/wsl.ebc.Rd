@@ -78,6 +78,11 @@ for presences and absences distinctively.
 
 
 }
+\references{
+Chauvier, Y., Zimmermann, N. E., Poggiato, G., Bystrova, D., Brun, P., & Thuiller, W. (2021).
+Novel methods to correct for observer and sampling bias in presence‐only species distribution
+models. Global Ecology and Biogeography, 30(11), 2312-2325.
+}
 \author{
 Yohann Chauvier
 }

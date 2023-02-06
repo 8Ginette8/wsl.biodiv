@@ -17,6 +17,11 @@ Not to be called directly by the user}
 \description{
 Subsample based on two stratification critera
 }
+\references{
+Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+models in complex mountainous terrain. bioRxiv, 2022-03.
+}
 \author{
-Philipp
+Philipp Brun
 }

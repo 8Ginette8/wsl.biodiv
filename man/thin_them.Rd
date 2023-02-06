@@ -23,6 +23,11 @@ Thin a spatial points object by number of points or minimum distance
 iteratively the closest point pairs are compared and the
 point with the lower overall distinctiveness is removed
 }
+\references{
+Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+models in complex mountainous terrain. bioRxiv, 2022-03.
+}
 \author{
-Philipp
+Philipp Brun
 }

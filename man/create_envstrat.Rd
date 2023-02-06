@@ -31,5 +31,5 @@ Create environmental strata for environmentally stratified pseudoabsence
 sampling.
 }
 \author{
-Philipp
+Philipp Brun
 }
