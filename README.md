@@ -17,6 +17,9 @@ library(wsl.biodiv)
 
 Load package & data
 ``` r
+# Package
+library(wsl.biodiv)
+
 # Take anguilla data set from dismo package
 data("Anguilla_train")
 vrs=c("SegSumT","USRainDays","USSlope")
