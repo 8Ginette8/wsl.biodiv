@@ -6,24 +6,16 @@
 #' linear function of predictors. Quadrature points (or background points) are necessary in the
 #' model, and may be generated with the 'wsl.quadrature' function. Those points apply a spatial
 #' scaling proportional to the study area and estimate the maximised model log likelihood (see
-#' Renner 2013, Renner et al. 2015). Two version of the function are available. 'wsl.ppmO' applies
-#' a simple point process model using the 'ppm' function from the package "spatstat" i.e. without
-#' any further validation possible (only for calibration and prediction use). 'wsl.ppmGlasso'
-#' applies a similar point process model but by implementing choices of regularisation and
-#' variable selection following the package "glmnet". 
+#' Renner 2013, Renner et al. 2015). 'wsl.ppmGlasso' applies a point process model, but also by
+#' choosing to implement regularisation and variable selection following the package "glmnet".
 #'
 #' @param pres Object of class 'data.frame' or 'matrix'. Coordinates xy of Species observations.
 #' @param env_vars If 'wsl.ppmGlasso' used, must be an object of class 'matrix' or 'data.frame'
-#' with environmental predictor values. If 'wsl.ppmO' used, must be an object of class 'list' generated
-#' with the wsl.ppm.env' function. Note that categorical predictor values must be of class factor for
+#' with environmental predictor values. Note that categorical predictor values must be of class factor for
 #' both 'env_vars' and 'quadPoints@Qenv'
 #' @param quadPoints If 'wsl.ppmGlasso' used, must a 'wsl.quads' object generated with 'wsl.quadrature'
-#' function and 'lasso=TRUE'. If 'wsl.ppmO' used, must be a 'ppp' object generated with the
-#' 'wsl.quadrature' function with 'lasso=FALSE'; here, may be one same object for each 'reps' or a
-#' list of objects whose length equal to 'reps'
+#' function and 'lasso=TRUE'.
 #' @param asurface Only when 'wsl.ppmGlasso' used.The surface of the study area in square kilometers
-#' @param window Only when 'wsl.ppmO' used. An object of class 'owin' generated with the
-#' 'wsl.ppm.window' function
 #' @param poly If TRUE, PPPM fits a second order polynomial regression
 #' @param which_poly Which predictors should be using polynomial terms? Use a binary vector that
 #' specify which variables/predictors. Length of vector must be equal to the number of input variables.
@@ -50,8 +42,7 @@
 #' cv.glmnet() function (package 'glmnet') use to apply a Lasso, Ridge or Elastic Net
 #' regularisation. To notice that the package's argument 'penalty.factor' is not needed
 #' here. If used, the parameter 'penalty.glmnet' must instead be filled for each 'env_vars'.
-#' If lasso = FALSE, arguments passed on to the glm("poisson") function. If 'wsl.ppmO'
-#' used, arguments passed on to the ppm() function (package 'spatstat').
+#' If lasso = FALSE, arguments passed on to the glm("poisson") function.
 #' @return Object of class wsl.fit including slots for meta info, testing data for
 #' evaluation, and model objects
 #' @author Yohann Chauvier, Philipp Brun
@@ -96,7 +87,7 @@
 #'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 #' 
 #' lasso1 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg1",
@@ -117,7 +108,7 @@
 #'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 #' 
 #' lasso2 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg2",

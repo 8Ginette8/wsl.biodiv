@@ -32,8 +32,6 @@ be of class factor. NB: Here, model evaluation will only be initiated for the ne
 'matrix' defining a sample of the target layers by keeping same order for columns. If spatial layers
 are used, object of class 'RasterStack' or RasterBrick'.}
 
-\item{window}{Only when 'wsl.ppmO' used'. Same object of class 'owin' used for models (in developments)}
-
 \item{thres}{Vector of the same length as the number of reps in model fit object}
 
 \item{pres_abs}{Logical. If TRUE, evaluation metrics of presence-only models is applied to a wsl.fit
@@ -104,7 +102,7 @@ envG = raster::extract(rst,mypoints)
        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 
 lasso1 = wsl.ppmGlasso(pres = mypoints,
-                       quadPoints = quadG1@Qenv,
+                       quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg1",
@@ -126,7 +124,7 @@ lasso1 = wsl.ppmGlasso(pres = mypoints,
        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 
 lasso2 = wsl.ppmGlasso(pres = mypoints,
-                       quadPoints = quadG1@Qenv,
+                       quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg2",
@@ -146,18 +144,14 @@ lasso2 = wsl.ppmGlasso(pres = mypoints,
    # Example for 'wsl.ppmGlasso'
 
 eval1 = wsl.evaluate.pres(x = lasso1,
-                          tester = NULL,
-                          env_vars = rst,
-                          mask = maskR,
-                          window = NULL,
-                          thres = NULL)
+                          env_vars = rst)
 
-eval2 = wsl.evaluate.pres(x = lasso2,
-                          tester = NULL,
+eval2 = wsl.evaluate.pres(x = lasso2,,
                           env_vars = rst,
-                          mask = maskR,
-                          window = NULL,
                           thres = 0.001)
+
+summmary(eval1)
+summary(eval2)
 
 }
 \author{

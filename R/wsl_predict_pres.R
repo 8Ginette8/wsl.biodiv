@@ -11,9 +11,7 @@
 #' types if a mean is applied accross model types. Obtained with 'get_thres'
 #' @param predat Same spatial layers used in the fitted model or an object of class 'data.frame' or 
 #' 'matrix' defining a sample of the target layers by keeping same order for columns. If spatial layers,
-#' when wsl.ppmGlasso' used, object of class 'RasterStack' or RasterBrick'. When 'wsl.ppmO' used, a list of
-#' 'im' object. 'wsl.ppmO' must be used with bias_cov = NULL (in developments)
-#' @param window Only when 'wsl.ppmO' used'. Same object of class 'owin' used for models
+#' when wsl.ppmGlasso' used, object of class 'RasterStack' or RasterBrick'.
 #' @param log_trans Logical. Should the predictions be converted to logarithm before converting to binary ?
 #' Should be TRUE if log.trans was TRUE when using wsl.evaluate
 #' @param raster Logical. Should the output be a list of rasters or matrix ?
@@ -63,7 +61,7 @@
 #'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 #' 
 #' lasso1 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg1",
@@ -86,7 +84,7 @@
 #'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 #' 
 #' lasso2 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg2",
@@ -106,18 +104,14 @@
 #'    # Example for 'wsl.ppmGlasso'
 #' 
 #' eval1 = wsl.evaluate.pres(x = lasso1,
-#'                           tester = NULL,
-#'                           env_vars = rst,
-#'                           mask = maskR,
-#'                           window = NULL,
-#'                           thres = NULL)
+#'                           env_vars = rst)
 #' 
-#' eval2 = wsl.evaluate.pres(x = lasso2,
-#'                           tester = NULL,
+#' eval2 = wsl.evaluate.pres(x = lasso2,,
 #'                           env_vars = rst,
-#'                           mask = maskR,
-#'                           window = NULL,
 #'                           thres = 0.001)
+#' 
+#' summmary(eval1)
+#' summary(eval2)
 #' 
 #' ### Thresholds
 #' 
@@ -132,7 +126,6 @@
 #'    # 'wsl.ppmGlasso'
 #' pred1 = wsl.predict.pres(x = lasso1,
 #'                          predat = rst,
-#'                          window = NULL,
 #'                          mask = maskR,
 #'                          thres = get_thres(eval1,mean=FALSE),
 #'                          raster = TRUE)
@@ -142,7 +135,6 @@
 #' 
 #' pred2 = wsl.predict.pres(x = lasso2,
 #'                          predat = rst,
-#'                          window = NULL,
 #'                          mask = maskR,
 #'                          thres = NULL,
 #'                          raster = TRUE)
@@ -152,7 +144,6 @@
 #' 
 #' pred3 = wsl.predict.pres(x = lasso1,
 #'                          predat = rst,
-#'                          window = NULL,
 #'                          mask = maskR,
 #'                          thres = get_thres(eval1,mean=TRUE),
 #'                          raster = TRUE)
@@ -162,7 +153,6 @@
 #' 
 #' pred4 = wsl.predict.pres(x = lasso2,
 #'                          predat = rst,
-#'                          window = NULL,
 #'                          mask = maskR,
 #'                          thres = NULL,
 #'                          raster = FALSE)

@@ -16,7 +16,6 @@
 #' @param env_vars Same spatial layers used in the fitted model or an object of class 'data.frame' or 
 #' 'matrix' defining a sample of the target layers by keeping same order for columns. If spatial layers
 #' are used, object of class 'RasterStack' or RasterBrick'.
-#' @param window Only when 'wsl.ppmO' used'. Same object of class 'owin' used for models (in developments)
 #' @param log_trans Logical. Use only if pres_abs=FALSE. Should predictions be converted to logarithm
 #' before evaluation? Prevent model evaluation errors.
 #' @param speedup If env_vars is a 'RasterStack' or RasterBrick', should the boyce evaluation be faster?
@@ -72,7 +71,7 @@
 #'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 #' 
 #' lasso1 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg1",
@@ -94,7 +93,7 @@
 #'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 #' 
 #' lasso2 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1@Qenv,
+#'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg2",
@@ -114,18 +113,14 @@
 #'    # Example for 'wsl.ppmGlasso'
 #' 
 #' eval1 = wsl.evaluate.pres(x = lasso1,
-#'                           tester = NULL,
-#'                           env_vars = rst,
-#'                           mask = maskR,
-#'                           window = NULL,
-#'                           thres = NULL)
+#'                           env_vars = rst)
 #' 
-#' eval2 = wsl.evaluate.pres(x = lasso2,
-#'                           tester = NULL,
+#' eval2 = wsl.evaluate.pres(x = lasso2,,
 #'                           env_vars = rst,
-#'                           mask = maskR,
-#'                           window = NULL,
 #'                           thres = 0.001)
+#' 
+#' summmary(eval1)
+#' summary(eval2)
 #' 
 #' @export
 wsl.evaluate.pres<-function(x,tester=data.frame(),env_vars,window=NULL,thres=numeric(),
