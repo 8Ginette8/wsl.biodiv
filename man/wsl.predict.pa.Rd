@@ -157,7 +157,7 @@ eval4=wsl.evaluate.pa(modi4,crit="external",thres=thmxe)
 summary(eval4)
 
 # Get thresholds
-thr.4=get_thres(eval4)
+thr.4=get_thres(eval4, mean=FALSE)
 
 ### Check out wsl.flex
 form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
@@ -196,7 +196,7 @@ eval5<-wsl.evaluate.pa(modi5,crit="pp=op")
 summary(eval5)
 
 # Get thresholds
-thr.5=get_thres(eval5)
+thr.5=get_thres(eval5, mean=FALE)
 
 ### Make some predictions
 pred4=wsl.predict.pa(modi4,predat=env)

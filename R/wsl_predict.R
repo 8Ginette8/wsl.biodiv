@@ -140,17 +140,12 @@
 #' summary(eval4)
 #'
 #' # Get thresholds
-#' thr.4=get_thres(eval4)
+#' thr.4=get_thres(eval4, mean=FALSE)
 #'
 #' ### Check out wsl.flex
 #' form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 #'
-#' modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
-#'    multi("gbm",list(formula=form.gbm,
-#'    distribution = "bernoulli",
-#'    interaction.depth = 1,
-#'    shrinkage=.01,
-#'    n.trees = 3500),"gbm-simple"), 
+#' modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE), 
 #'    multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
 #'    multi("maxent",list(args=feat),"mxe-simple"),
 #'    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
@@ -179,7 +174,7 @@
 #' summary(eval5)
 #'
 #' # Get thresholds
-#' thr.5=get_thres(eval5)
+#' thr.5=get_thres(eval5, mean=FALE)
 #'
 #' ### Make some predictions
 #' pred4=wsl.predict.pa(modi4,predat=env)
