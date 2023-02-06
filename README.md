@@ -53,7 +53,7 @@ modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                mod_args=modinp)
 ```
 
-Evaluate and display
+Evaluate and display results
 ``` r
 # Evaluate the model
 eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
