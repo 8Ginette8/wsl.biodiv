@@ -71,8 +71,6 @@
 #'                        save=FALSE,
 #'                        project = "lasso_eg1",
 #'                        path = NA,
-#'                        type = "binomial",
-#'                        mask = maskR,
 #'                        poly = TRUE,
 #'                        lasso = TRUE,
 #'                        alpha = 0.5,
@@ -94,8 +92,6 @@
 #'                        save = FALSE,
 #'                        project = "lasso_eg2",
 #'                        path = NA,
-#'                        type = "binomial",
-#'                        mask = maskR,
 #'                        poly = FALSE,
 #'                        lasso = FALSE)
 #' 
@@ -126,7 +122,6 @@
 #'    # 'wsl.ppmGlasso'
 #' pred1 = wsl.predict.pres(x = lasso1,
 #'                          predat = rst,
-#'                          mask = maskR,
 #'                          thres = get_thres(eval1,mean=FALSE),
 #'                          raster = TRUE)
 #' 
@@ -135,8 +130,6 @@
 #' 
 #' pred2 = wsl.predict.pres(x = lasso2,
 #'                          predat = rst,
-#'                          mask = maskR,
-#'                          thres = NULL,
 #'                          raster = TRUE)
 #' 
 #' par(mfrow=c(2,3))
@@ -144,7 +137,6 @@
 #' 
 #' pred3 = wsl.predict.pres(x = lasso1,
 #'                          predat = rst,
-#'                          mask = maskR,
 #'                          thres = get_thres(eval1,mean=TRUE),
 #'                          raster = TRUE)
 #' 
@@ -153,8 +145,6 @@
 #' 
 #' pred4 = wsl.predict.pres(x = lasso2,
 #'                          predat = rst,
-#'                          mask = maskR,
-#'                          thres = NULL,
 #'                          raster = FALSE)
 #' 
 #' @export

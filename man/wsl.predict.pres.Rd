@@ -91,8 +91,6 @@ lasso1 = wsl.ppmGlasso(pres = mypoints,
                        save=FALSE,
                        project = "lasso_eg1",
                        path = NA,
-                       type = "binomial",
-                       mask = maskR,
                        poly = TRUE,
                        lasso = TRUE,
                        alpha = 0.5,
@@ -114,8 +112,6 @@ lasso2 = wsl.ppmGlasso(pres = mypoints,
                        save = FALSE,
                        project = "lasso_eg2",
                        path = NA,
-                       type = "binomial",
-                       mask = maskR,
                        poly = FALSE,
                        lasso = FALSE)
 
@@ -146,7 +142,6 @@ get_thres(eval2, mean = TRUE)
    # 'wsl.ppmGlasso'
 pred1 = wsl.predict.pres(x = lasso1,
                          predat = rst,
-                         mask = maskR,
                          thres = get_thres(eval1,mean=FALSE),
                          raster = TRUE)
 
@@ -155,8 +150,6 @@ sapply(1:5,function(x) plot(pred1@predictions[[x]][[1]]))
 
 pred2 = wsl.predict.pres(x = lasso2,
                          predat = rst,
-                         mask = maskR,
-                         thres = NULL,
                          raster = TRUE)
 
 par(mfrow=c(2,3))
@@ -164,7 +157,6 @@ sapply(1:5,function(x) plot(pred2@predictions[[x]][[1]]))
 
 pred3 = wsl.predict.pres(x = lasso1,
                          predat = rst,
-                         mask = maskR,
                          thres = get_thres(eval1,mean=TRUE),
                          raster = TRUE)
 
@@ -173,8 +165,6 @@ sapply(1:5,function(x) plot(pred3@predictions[[x]][[1]]))
 
 pred4 = wsl.predict.pres(x = lasso2,
                          predat = rst,
-                         mask = maskR,
-                         thres = NULL,
                          raster = FALSE)
 
 }

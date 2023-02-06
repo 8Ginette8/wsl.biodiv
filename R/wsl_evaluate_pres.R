@@ -81,7 +81,6 @@
 #'                        save=FALSE,
 #'                        project = "lasso_eg1",
 #'                        path = NA,
-#'                        type = "binomial",
 #'                        poly = TRUE,
 #'                        lasso = TRUE,
 #'                        alpha = 0.5,
@@ -103,8 +102,6 @@
 #'                        save = FALSE,
 #'                        project = "lasso_eg2",
 #'                        path = NA,
-#'                        type = "binomial",
-#'                        mask = maskR,
 #'                        poly = FALSE,
 #'                        lasso = FALSE)
 #' 
