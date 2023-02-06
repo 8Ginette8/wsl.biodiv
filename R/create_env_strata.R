@@ -11,7 +11,7 @@
 
 #' Not to be called directly by the user
 #'
-#' @author Philipp
+#' @author Philipp Brun
 #' @export
 create_envstrat=function(env.stk,
                          rAll=TRUE,

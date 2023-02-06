@@ -6,8 +6,11 @@
 #' @param type either 'env.strat' or 'env.semi.strat'
 #' @param sampsiz desired size of the subsample
 #' Not to be called directly by the user
-#'
-#' @author Philipp
+#' @references
+#' Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+#' Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+#' models in complex mountainous terrain. bioRxiv, 2022-03.
+#' @author Philipp Brun
 #' @export
 stratify=function(spp,type,sampsiz){
 

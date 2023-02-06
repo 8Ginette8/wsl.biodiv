@@ -8,7 +8,7 @@
 #' @slot pa a vector with presences and pseudo absences
 #' @slot env_vars data.frame with environmental predictors
 #' @slot xy a matrix with coordinates of the points
-#' @author Philipp
+#' @author Philipp Brun
 #' @export
 wsl.pseudoabsences<-setClass("wsl.pseudoabsences",slots=c(meta="list", # Meta information
                                                           pa="numeric", # store presence/pseudoabsence information

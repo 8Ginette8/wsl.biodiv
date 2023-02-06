@@ -11,7 +11,11 @@
 #' @details iteratively the closest point pairs are compared and the
 #' point with the lower overall distinctiveness is removed
 #' @return thinned SpatialPoints or SpatialPointsDataFrame object
-#' @author Philipp
+#' @author Philipp Brun
+#' @references
+#' Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+#' Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+#' models in complex mountainous terrain. bioRxiv, 2022-03.
 #' @export
 thin_them<-function(spdf,lim_dist=NA,lim_n=NA){
 

@@ -13,7 +13,11 @@
 #' to all existing points i the sample are not respected
 #' @return SpatialPoints or SpatialPointsDataFrame with at least
 #' lim_dist between all points
-#' @author Philipp
+#' @author Philipp Brun
+#' @references
+#' Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... &
+#' Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution
+#' models in complex mountainous terrain. bioRxiv, 2022-03.
 #' @export
 upsample_thin<-function(spdf,lim_dist,n_tot){
   
