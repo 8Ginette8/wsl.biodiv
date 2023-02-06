@@ -56,7 +56,7 @@ modi5=wsl.flex(pa=Anguilla_train$Angaus,
 Evaluate and display
 ``` r
 # Evaluate the model
-eval5<-wsl.evaluate.pa(modi5,crit="pp=op")
+eval5<-wsl.evaluate.pa(modi5,crit="maxTSS")
 
 # Get outputs or evaluation summary
 eval5
