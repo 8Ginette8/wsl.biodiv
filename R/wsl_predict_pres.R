@@ -75,7 +75,7 @@
 #'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 #' 
 #' lasso1 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1$Edata,
+#'                        quadPoints = quadG1@Qenv,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg1",
@@ -98,7 +98,7 @@
 #'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 #' 
 #' lasso2 = wsl.ppmGlasso(pres = mypoints,
-#'                        quadPoints = quadG1$Edata,
+#'                        quadPoints = quadG1@Qenv,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
 #'                        taxon = "species_eg2",
