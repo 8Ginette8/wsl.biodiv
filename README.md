@@ -53,7 +53,7 @@ modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                mod_args=modinp)
 ```
 
-Evaluate and display
+Evaluate and display results
 ``` r
 # Evaluate the model
 eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
@@ -65,7 +65,9 @@ summary(eval5)
 
 Let's predict now
 ``` r
-
+# Make some predictions (works also with Raster objects)
+pred4=wsl.predict.pa(modi4,predat=env)
+pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
 ## Point process model (PPM) lasso
