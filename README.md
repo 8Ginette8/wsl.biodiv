@@ -15,7 +15,7 @@ library(wsl.biodiv)
 
 ## Ensemble model
 
-Load package & data
+Load package & data:
 ``` r
 # Package
 library(wsl.biodiv)
@@ -26,7 +26,7 @@ vrs = c("SegSumT","USRainDays","USSlope")
 env = Anguilla_train[,vrs]
 ```
 
-Custom parameters for the ensemble model
+Custom parameters for the ensemble model:
 ``` r
 # Formulas
 form.glm = as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
@@ -41,7 +41,7 @@ modinp = list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",
    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"))
 ```
 
-Calibrate ensemble model
+Calibrate ensemble model:
 ``` r
 modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                env_vars = env,
@@ -54,7 +54,7 @@ modi5 = wsl.flex(pa=Anguilla_train$Angaus,
 summary(modi5)
 ```
 
-Evaluate and display results
+Evaluate and display results:
 ``` r
 # Evaluate the model
 eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
@@ -64,7 +64,7 @@ eval5
 summary(eval5)
 ```
 
-Let's predict now
+Let's predict now:
 ``` r
 # Make some predictions (works also with Raster objects)
 pred4=wsl.predict.pa(modi4,predat=env)
@@ -73,7 +73,7 @@ pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 
 ## Point process model (PPM)
 
-Load data
+Load data:
 ``` r
 data(AlpineConvention_lonlat)
 data(exrst)
@@ -82,7 +82,7 @@ data(xy_ppm)
 mypoints = xy.ppm[,c("x","y")]
 ```
 
-Define a mask of your study area, to set a window and sample quadrature points
+Define a mask of your study area, to set a window and sample quadrature points:
 ``` r
 # Define mask
 maskR = mask(rst[[1]],shp.lonlat)
@@ -100,7 +100,7 @@ quadG1 = wsl.quadrature(mask = maskR,
                         env_vars = rst)
 ```
 
-Fit a PPM with an Elastic Net regularization
+Fit a PPM with an Elastic Net regularization:
 ``` r
 ppm.lasso = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
@@ -123,7 +123,7 @@ ppm.lasso = wsl.ppmGlasso(pres = mypoints,
 summary(ppm.lasso)
 ```
 
-Fit a simple PPM (without any regularization)
+Fit a simple PPM (without any regularization):
 ``` r
 ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
