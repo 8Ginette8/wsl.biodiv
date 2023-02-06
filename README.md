@@ -51,6 +51,7 @@ modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                strata=sample(1:3,nrow(env),replace=TRUE),
                project="multitest",
                mod_args=modinp)
+summary(modi5)
 ```
 
 Evaluate and display results
@@ -72,8 +73,72 @@ pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 
 ## Point process model (PPM)
 
+Load data
 ``` r
-...
+data(AlpineConvention_lonlat)
+data(exrst)
+rst = rst[[1:6]]
+data(xy_ppm)
+mypoints = xy.ppm[,c("x","y")]
+```
+
+Define a mask of your study area, to set a window and sample quadrature points
+``` r
+# Define mask
+maskR = mask(rst[[1]],shp.lonlat)
+
+# Run 'wsl.ppm.window' function
+wind = wsl.ppm.window(mask = maskR,
+                      val = 1,
+                      owin = TRUE)
+
+# Define random  quadrature points for 'wsl.ppmGlasso'
+quadG1 = wsl.quadrature(mask = maskR,
+                        area.win = wind,
+                        random = FALSE,
+                        lasso = TRUE,
+                        env_vars = rst)
+```
+
+Fit a PPM with an Elastic Net regularization
+``` r
+ppm.lasso = wsl.ppmGlasso(pres = mypoints,
+                       quadPoints = quadG1,
+                       asurface = raster::area(shp.lonlat)/1000,
+                       env_vars = envG,
+                       taxon = "species_eg1",
+                       replicatetype = "cv",
+                       reps = 5,
+                       strata = NA,
+                       save=FALSE,
+                       project = "lasso_eg1",
+                       path = NA,
+                       poly = TRUE,
+                       lasso = TRUE,
+                       alpha = 0.5,             # 0.5 = Elastic Net here
+                       type.measure = "mse",    # Other regularization parameters
+                       standardize = TRUE,      # ....
+                       nfolds = 5,              # ....
+                       nlambda = 100)           # ....see cv.glmnet() for more details
+summary(ppm.lasso)
+```
+
+Fit a simple PPM (without any regularization)
+``` r
+ppm.simple = wsl.ppmGlasso(pres = mypoints,
+                       quadPoints = quadG1,
+                       asurface = raster::area(shp.lonlat)/1000,
+                       env_vars = envG,
+                       taxon = "species_eg2",
+                       replicatetype = "cv",
+                       reps = 5,
+                       strata = NA,
+                       save = FALSE,
+                       project = "lasso_eg2",
+                       path = NA,
+                       poly = FALSE,
+                       lasso = FALSE)
+summary(ppm.simple)
 ```
 
 # Citations
