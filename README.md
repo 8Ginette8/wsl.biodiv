@@ -22,20 +22,20 @@ library(wsl.biodiv)
 
 # Take anguilla data set from dismo package
 data("Anguilla_train")
-vrs=c("SegSumT","USRainDays","USSlope")
-env=Anguilla_train[,vrs]
+vrs = c("SegSumT","USRainDays","USSlope")
+env = Anguilla_train[,vrs]
 ```
 
 Custom parameters for the ensemble model
 ``` r
 # Formulas
-form.glm=as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
-form.gam=as.formula(paste("Presence~",paste(paste0("s(",vrs,")"),collapse="+")))
-form.gbm=as.formula(Presence ~ .)
-feat=c("linear=true","quadratic=true","hinge=true","product=true","threshold=false")
+form.glm = as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
+form.gam = as.formula(paste("Presence~",paste(paste0("s(",vrs,")"),collapse="+")))
+form.gbm = as.formula(Presence ~ .)
+feat = c("linear=true","quadratic=true","hinge=true","product=true","threshold=false")
 
 # All options
-modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
+modinp = list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
    multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
    multi("maxent",list(args=feat),"mxe-simple"),
    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"))
@@ -43,7 +43,7 @@ modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",st
 
 Calibrate ensemble model
 ``` r
-modi5=wsl.flex(pa=Anguilla_train$Angaus,
+modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                env_vars = env,
                taxon="Angaus",
                replicatetype="block-cv",
@@ -56,7 +56,7 @@ modi5=wsl.flex(pa=Anguilla_train$Angaus,
 Evaluate and display
 ``` r
 # Evaluate the model
-eval5<-wsl.evaluate.pa(modi5,crit="maxTSS")
+eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
 
 # Get outputs or evaluation summary
 eval5
