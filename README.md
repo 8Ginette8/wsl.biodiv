@@ -70,7 +70,7 @@ pred4=wsl.predict.pa(modi4,predat=env)
 pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Point process model (PPM) lasso
+## Point process model (PPM)
 
 ``` r
 ...
