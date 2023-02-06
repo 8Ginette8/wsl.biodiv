@@ -1,0 +1,72 @@
+Package: wsl.biodiv
+Type: Package
+Title: A toolbox to efficiently handle Species Distribution Modelling (SDMs) in collaborative projects
+Version: 0.1.0
+Depends: R (>= 3.1.0), snow, mgcv, dismo, MASS, gbm, randomForest, ROCR, cluster, NMOF, spatstat, raster, foreach, doParallel, usdm, glmnet, neuralnet, rgbif, CoordinateCleaner, rgdal, lme4, MuMIn
+Description: Package aiming at varied and flexible model fitting and tools for SDMs.
+    Meta information should be stored (author, date, taxon,...) efficiently.
+    Model evaluation and prediction should flexibly handle various fitted model objects.
+    Evaluation metrics for pres-only and pres-abs models should be mutually implemented.
+    Relationships between saved objects should be preserved.
+    Filtering and testing tools should help the user to find adequate predictors.
+    Poisson Point Process models (PPPM) implementation should remain user-friendly.
+    Regularization and variable selection should be implemented in this framework.
+License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+Authors: Philipp Brun [cre,aut] ------------ email: philipp.brun@wsl.ch
+    Yohann Chauvier [cre,aut] ----------- email: yohann.chauvier@wsl.ch
+    Rafael Wueest [aut] ------------------- email: rafael.wueest@wsl.ch
+Collate:
+    'boycei.R'
+    'ceval.R'
+    'copy_PseuAbs.R'
+    'create_env_strata.R'
+    'df_or_rast.R'
+    'ecoBoyce.R'
+    'ecospat_d2.R'
+    'get_thres.R'
+    'hde.R'
+    'make_blocks.R'
+    'make_tiles.R'
+    'multi.R'
+    'multi_input_class.R'
+    'optme.R'
+    'plot_wsl_pseudoabsences.R'
+    'prd.R'
+    'prd_pres.R'
+    'preps.R'
+    'preva_meta.R'
+    'prop_sampling.R'
+    'pseu_targr.R'
+    'stratify.R'
+    'summary_wsl_evaluation.R'
+    'summary_wsl_fit.R'
+    'Thin_them_function.R'
+    'upsample_strategic.R'
+    'upsample_thin.R'
+    'wsl_doi.R'
+    'wsl_ebc.R'
+    'wsl_evaluate.R'
+    'wsl_evaluate_pres.R'
+    'wsl_evaluation_class.R'
+    'wsl_fit_class.R'
+    'wsl_fitting.R'
+    'wsl_gbif.R'
+    'wsl_obs_filter.R'
+    'wsl_ppm_env.R'
+    'wsl_ppm_fit.R'
+    'wsl_ppm_qscheme.R'
+    'wsl_ppm_quadrature.R'
+    'wsl_ppm_window.R'
+    'wsl_predict.R'
+    'wsl_predict_pres.R'
+    'wsl_prediction_class.R'
+    'wsl_pseudoabsences_class.R'
+    'wsl_quads_class.R'
+    'wsl_samplePseuAbs.R'
+    'wsl_taxonomy.R'
+    'wsl_test_quadrature.R'
+    'wsl_varKeep.R'
+    'wsl_varPPower.R'
