@@ -16,15 +16,13 @@ library(wsl.biodiv)
 # Ensemble models
 
 ``` r
-remotes::install_github("8Ginette8/wsl.biodiv")
-library(wsl.biodiv)
+...
 ```
 
 # Point process models (PPMs) lasso
 
 ``` r
-remotes::install_github("8Ginette8/wsl.biodiv")
-library(wsl.biodiv)
+...
 ```
 
 ## Mandatory citations
