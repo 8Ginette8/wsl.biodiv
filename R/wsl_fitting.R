@@ -160,15 +160,15 @@
 #' form.glm.2=as.formula(paste("Presence~",paste(vrs,collapse="+")))
 #'
 #' modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
-#' multi("gbm",list(formula=form.gbm,
-#'                  distribution = "bernoulli",
-#'                  interaction.depth = 1,
-#'                  shrinkage=.01,
-#'                  n.trees = 3500),"gbm-simple"),
-#' multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE)),
-#' multi("maxent",list(args=feat),"mxe-simple"),
-#' multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
-#' multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE,weight=TRUE)))
+#'    multi("gbm",list(formula=form.gbm,
+#'    distribution = "bernoulli",
+#'    interaction.depth = 1,
+#'    shrinkage=.01,
+#'    n.trees = 3500),"gbm-simple"), 
+#'    multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
+#'    multi("maxent",list(args=feat),"mxe-simple"),
+#'    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"),
+#'    multi("glm",list(formula=form.glm.2,family="binomial"),"glm-lin",step=TRUE,weight=TRUE))
 #'
 #' # Try out wsl.glm funcion
 #' modi5=wsl.flex(pa=Anguilla_train$Angaus,
