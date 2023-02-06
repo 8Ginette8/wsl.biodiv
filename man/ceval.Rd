@@ -4,7 +4,7 @@
 \alias{ceval}
 \title{Do the actual model evaluations}
 \usage{
-ceval(f, pa, tesdat, crit, tre = numeric())
+ceval(f, pa, crit, tre = numeric())
 }
 \description{
 Not to be called directly by the user
