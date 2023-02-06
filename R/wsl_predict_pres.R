@@ -52,22 +52,10 @@
 #'                         lasso = TRUE,
 #'                         env_vars = rst)
 #' 
-#' ### Define quadrature points for 'wsl.ppmO'
-#' 
-#'    # Grid regular
-#' quadO1 = wsl.quadrature(mask = maskR,
-#'                         area.win = wind,
-#'                         random = FALSE,
-#'                         lasso = FALSE,
-#'                         env_vars = NULL)
-#' 
 #' ### Define your environments
 #' 
 #'    # For 'wsl.ppmGlasso' (observations focus)
 #' envG = raster::extract(rst,mypoints)
-#' 
-#'    # For 'wsl.ppmO' (study area focus)
-#' envO = wsl.ppm.env(rst,maskR)
 #' 
 #' ### Modelling
 #' 
@@ -113,39 +101,6 @@
 #'                        poly = FALSE,
 #'                        lasso = FALSE)
 #' 
-#'    # 'wsl.ppmO'
-#'        # Simple PPPM non lasso (same as above with poly = FALSE & lasso = FALSE)
-#' 
-#' form.Sppm = as.formula(paste("~",paste(names(envO),collapse="+")))
-#' lasso3 = wsl.ppmO(pres = mypoints,
-#'                   quadPoints = quadO1,
-#'                   env_vars = envO,
-#'                   window = wind,
-#'                   taxon = "species_eg3",
-#'                   replicatetype = "cv",
-#'                   reps = 5,                      
-#'                   strata = NA,
-#'                   save = FALSE,
-#'                   project = "lasso_eg3",
-#'                   path = NA,
-#'                   formula = form.Sppm)
-#' 
-#'        # Complex PPPM non lasso
-#' 
-#' form.Cppm = as.formula(paste("~",paste(paste0("poly(",names(envO),",2)"),collapse="+")))
-#' lasso4 = wsl.ppmO(pres = mypoints,
-#'                   quadPoints = quadO1,
-#'                   env_vars = envO,
-#'                   window = wind,
-#'                   taxon = "species_eg3",
-#'                   replicatetype = "cv",
-#'                   reps = 5,                      
-#'                   strata = NA,
-#'                   save = FALSE,
-#'                   project = "lasso_eg3",
-#'                   path = NA,
-#'                   formula = form.Cppm)
-#' 
 #' ### Evaluation
 #' 
 #'    # Example for 'wsl.ppmGlasso'
@@ -163,21 +118,7 @@
 #'                           mask = maskR,
 #'                           window = NULL,
 #'                           thres = 0.001)
-#'    
-#'    # Example for 'wsl.ppmO'
-#' eval3 = wsl.evaluate.pres(x = lasso3,
-#'                           tester = NULL,
-#'                           env_vars = envO,
-#'                           mask = maskR,
-#'                           window = wind,
-#'                           thres = NULL)
 #' 
-#' eval4 = wsl.evaluate.pres(x = lasso4,
-#'                           tester = NULL,
-#'                           env_vars = envO,
-#'                           mask = maskR,
-#'                           window = wind,
-#'                           thres = NULL)
 #' ### Thresholds
 #' 
 #' get_thres(eval1, mean = FALSE)
@@ -185,12 +126,6 @@
 #' 
 #' get_thres(eval2, mean = FALSE)
 #' get_thres(eval2, mean = TRUE)
-#' 
-#' get_thres(eval3, mean = FALSE)
-#' get_thres(eval3, mean = TRUE)
-#' 
-#' get_thres(eval4, mean = FALSE)
-#' get_thres(eval4, mean = TRUE)
 #' 
 #' ### Predictions
 #' 
@@ -231,28 +166,6 @@
 #'                          mask = maskR,
 #'                          thres = NULL,
 #'                          raster = FALSE)
-#' 
-#'    'wsl.ppmO'
-#' 
-#' pred5 = wsl.predict.pres(x = lasso3,
-#'                          predat = envO,
-#'                          window = wind,
-#'                          mask = NULL,
-#'                          thres = get_thres(eval3,mean=FALSE),
-#'                          raster = TRUE)
-#' 
-#' par(mfrow=c(2,3))
-#' sapply(1:5,function(x) plot(pred5@predictions[[x]][[1]]))
-#' 
-#' pred6 = wsl.predict.pres(x = lasso4,
-#'                          predat = envO,
-#'                          window = wind,
-#'                          mask = NULL,
-#'                          thres = get_thres(eval4,mean=FALSE),
-#'                          raster = TRUE)
-#' 
-#' par(mfrow=c(2,3))
-#' sapply(1:5,function(x) plot(pred6@predictions[[x]][[1]]))
 #' 
 #' @export
 wsl.predict.pres<-function(x,thres=numeric(),predat=list(),

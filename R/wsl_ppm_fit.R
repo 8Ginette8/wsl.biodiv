@@ -85,22 +85,10 @@
 #'                         lasso = TRUE,
 #'                         env_vars = rst)
 #' 
-#' ### Define quadrature points for 'wsl.ppmO'
-#' 
-#'    # Grid regular
-#' quadO1 = wsl.quadrature(mask = maskR,
-#'                         area.win = wind,
-#'                         random = FALSE,
-#'                         lasso = FALSE,
-#'                         env_vars = NULL)
-#' 
 #' ### Define your environments
 #' 
 #'    # For 'wsl.ppmGlasso' (observations focus)
 #' envG = raster::extract(rst,mypoints)
-#' 
-#'    # For 'wsl.ppmO' (study area focus)
-#' envO = wsl.ppm.env(rst,maskR)
 #' 
 #' ### Modelling
 #' 
@@ -141,39 +129,6 @@
 #'                        path = NA,
 #'                        poly = FALSE,
 #'                        lasso = FALSE)
-#' 
-#'    # 'wsl.ppmO'
-#'        # Simple PPPM non lasso (same as above with poly = FALSE & lasso = FALSE)
-#' 
-#' form.Sppm = as.formula(paste("~",paste(names(envO),collapse="+")))
-#' lasso3 = wsl.ppmO(pres = mypoints,
-#'                   quadPoints = quadO1,
-#'                   env_vars = envO,
-#'                   window = wind,
-#'                   taxon = "species_eg3",
-#'                   replicatetype = "cv",
-#'                   reps = 5,                      
-#'                   strata = NA,
-#'                   save = FALSE,
-#'                   project = "lasso_eg3",
-#'                   path = NA,
-#'                   formula = form.Sppm)
-#' 
-#'        # Complex PPPM non lasso
-#' 
-#' form.Cppm = as.formula(paste("~",paste(paste0("poly(",names(envO),",2)"),collapse="+")))
-#' lasso4 = wsl.ppmO(pres = mypoints,
-#'                   quadPoints = quadO1,
-#'                   env_vars = envO,
-#'                   window = wind,
-#'                   taxon = "species_eg3",
-#'                   replicatetype = "cv",
-#'                   reps = 5,                      
-#'                   strata = NA,
-#'                   save = FALSE,
-#'                   project = "lasso_eg3",
-#'                   path = NA,
-#'                   formula = form.Cppm)
 #'
 #' @rdname fitppm
 #' @export
@@ -334,64 +289,6 @@ wsl.ppmGlasso<-function(pres=data.frame(),
       names(modi) = ifelse(mod_tag=="","ppmglm",mod_tag)
     }
 
-    fits[[i]] = modi
-  }
-  
-  # Name the fits
-  names(fits) = paste0("replicate_",sprintf("%02d",1:reps))
-  
-  # supply fitted objects
-  lis$wslfi@fits = fits
-  
-  # Save
-  #...
-  
-  return(lis$wslfi)
-  
-}
-
-
-#' @rdname fitppm
-#' @export
-### ==================================================================
-### PPM fitting function
-### ==================================================================
-
-
-wsl.ppmO<-function(pres=data.frame(),
-              quadPoints=ppp(),
-              env_vars=list(),
-              window=owin(),
-              taxon=character(),
-              replicatetype=character(),
-              reps,                      
-              strata=NA,
-              save=FALSE,
-              project=NA,
-              path=NA,
-              formula=NULL,
-              ...){
-
-  # check and prepare data and output
-  lis = preps(call=match.call())
-
-  # Check quadPoints and reps
-  if (!(class(quadPoints)%in%"ppp") & !(length(quadPoints)%in%reps)){
-      stop("Error: Number 'quadPoints' object and number of 'reps' different...")
-  }
-
-  # Extract quadratures if a list
-  if (class(quadPoints)%in%"ppp") {
-    quadPoints=rep(list(quadPoints),reps)
-  }
-  
-  #loop over replicates
-  fits=list()
-  for(i in 1:reps) {
-    modi = list()
-    Q = wsl.ppm.qscheme(lis$train[[i]],window,quadPoints[[i]])
-    modi[[1]] = ppm(Q, trend=formula, covariates=env_vars,...)
-    names(modi) = "ppm"
     fits[[i]] = modi
   }
   

@@ -93,22 +93,10 @@ quadG1 = wsl.quadrature(mask = maskR,
                         lasso = TRUE,
                         env_vars = rst)
 
-### Define quadrature points for 'wsl.ppmO'
-
-   # Grid regular
-quadO1 = wsl.quadrature(mask = maskR,
-                        area.win = wind,
-                        random = FALSE,
-                        lasso = FALSE,
-                        env_vars = NULL)
-
 ### Define your environments
 
    # For 'wsl.ppmGlasso' (observations focus)
 envG = raster::extract(rst,mypoints)
-
-   # For 'wsl.ppmO' (study area focus)
-envO = wsl.ppm.env(rst,maskR)
 
 ### Modelling
 
@@ -116,7 +104,7 @@ envO = wsl.ppm.env(rst,maskR)
        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 
 lasso1 = wsl.ppmGlasso(pres = mypoints,
-                       quadPoints = quadG1$Edata,
+                       quadPoints = quadG1@Qenv,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg1",
@@ -138,7 +126,7 @@ lasso1 = wsl.ppmGlasso(pres = mypoints,
        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 
 lasso2 = wsl.ppmGlasso(pres = mypoints,
-                       quadPoints = quadG1$Edata,
+                       quadPoints = quadG1@Qenv,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg2",
@@ -152,39 +140,6 @@ lasso2 = wsl.ppmGlasso(pres = mypoints,
                        mask = maskR,
                        poly = FALSE,
                        lasso = FALSE)
-
-   # 'wsl.ppmO'
-       # Simple PPPM non lasso (same as above with poly = FALSE & lasso = FALSE)
-
-form.Sppm = as.formula(paste("~",paste(names(envO),collapse="+")))
-lasso3 = wsl.ppmO(pres = mypoints,
-                  quadPoints = quadO1,
-                  env_vars = envO,
-                  window = wind,
-                  taxon = "species_eg3",
-                  replicatetype = "cv",
-                  reps = 5,                      
-                  strata = NA,
-                  save = FALSE,
-                  project = "lasso_eg3",
-                  path = NA,
-                  formula = form.Sppm)
-
-       # Complex PPPM non lasso
-
-form.Cppm = as.formula(paste("~",paste(paste0("poly(",names(envO),",2)"),collapse="+")))
-lasso4 = wsl.ppmO(pres = mypoints,
-                  quadPoints = quadO1,
-                  env_vars = envO,
-                  window = wind,
-                  taxon = "species_eg3",
-                  replicatetype = "cv",
-                  reps = 5,                      
-                  strata = NA,
-                  save = FALSE,
-                  project = "lasso_eg3",
-                  path = NA,
-                  formula = form.Cppm)
 
 ### Evaluation
 
@@ -203,21 +158,6 @@ eval2 = wsl.evaluate.pres(x = lasso2,
                           mask = maskR,
                           window = NULL,
                           thres = 0.001)
-   
-   # Example for 'wsl.ppmO'
-eval3 = wsl.evaluate.pres(x = lasso3,
-                          tester = NULL,
-                          env_vars = envO,
-                          mask = maskR,
-                          window = wind,
-                          thres = NULL)
-
-eval4 = wsl.evaluate.pres(x = lasso4,
-                          tester = NULL,
-                          env_vars = envO,
-                          mask = maskR,
-                          window = wind,
-                          thres = NULL)
 
 }
 \author{
