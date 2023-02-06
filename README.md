@@ -123,7 +123,7 @@ ppm.lasso = wsl.ppmGlasso(pres = mypoints,
 summary(ppm.lasso)
 ```
 
-Fit a simple PPM (without any regularization):
+Fit a simple PPM (without any regularization) using block cross-validation:
 ``` r
 ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
