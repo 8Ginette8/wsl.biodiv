@@ -82,6 +82,42 @@ plot(env[,c(1,3)],col=strt.4)
 plot(env[,c(1,3)],col=strt.5)
 plot(env[,c(1,3)],col=strt.6)
 
+### Test out function by using the 'pres' argument
+
+# Load data
+data(AlpineConvention_lonlat)
+data(exrst)
+rst = rst[[1:6]]
+data(xy_ppm)
+mypoints = xy.ppm[,c("x","y")]
+
+# Define mask
+maskR = mask(rst[[1]],shp.lonlat)
+
+# Run 'wsl.ppm.window' function
+wind = wsl.ppm.window(mask = maskR,
+                      val = 1,
+                      owin = TRUE)
+
+# Define quadrature points for 'wsl.ppmGlasso'
+quadG1 = wsl.quadrature(mask = maskR,
+                        area.win = wind,
+                        random = FALSE,
+                        lasso = TRUE,
+                        env_vars = rst)
+
+# Define your environments
+envG = raster::extract(rst,mypoints)
+
+# Spatial block cross-validation
+to_b_xy = rbind(mypoints,quadG1@coords)
+toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))
+block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSamp)
+ 
+# Environmental block cross-validation
+to_b_env = rbind(envG,quadG1@Qenv[,-1])
+block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
+
 }
 \author{
 Philipp Brun

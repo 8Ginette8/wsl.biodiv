@@ -65,7 +65,7 @@
 #'  
 #'    # Environmental block cross-validation
 #' 
-#' to_b_env = rbind(envG,quadG1@Qenv)
+#' to_b_env = rbind(envG,quadG1@Qenv[,-1])
 #' block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
 #' 
 #'    # 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
@@ -100,7 +100,7 @@
 #'                        taxon = "species_eg2",
 #'                        replicatetype = "cv",
 #'                        reps = 5,
-#'                        strata = block_cv,
+#'                        strata = block_cv_xy,
 #'                        save = FALSE,
 #'                        project = "lasso_eg2",
 #'                        path = NA,
