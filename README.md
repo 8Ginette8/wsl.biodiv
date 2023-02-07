@@ -78,7 +78,8 @@ pred4=wsl.predict.pa(modi4,predat=env)
 pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Preparation Point process model (PPM)
+## Point process models (PPM)
+# Data preparation
 
 Define a mask of your study area, to set a window and sample quadrature points:
 ``` r
@@ -98,7 +99,7 @@ quadG1 = wsl.quadrature(mask = maskR,
                         env_vars = rst)
 ```
 
-## Block cross-validation (BCV)
+# Block cross-validation (BCV)
 
 Spatial BCV:
 ``` r
@@ -113,7 +114,7 @@ to_b_env = rbind(envG,quadG1@Qenv[,-1])
 block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
 ```
 
-## Point process model (PPM)
+# Run PPMs
 
 Fit a PPM with an Elastic Net regularization:
 ``` r
