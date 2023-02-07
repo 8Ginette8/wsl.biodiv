@@ -182,7 +182,7 @@ eval.simple = wsl.evaluate.pa(x = ppm.simple,
 summary(eval.simple)
 ```
 
-Evaluation example by resetting a potential fitted bias covariate to 0s:
+Evaluation example by resetting a potential fitted bias covariate to 0 values (to remove sampling bias):
 ``` r
 eval.bias = wsl.evaluate.pa(x = ppm.simple,
                             crit = "maxTSS",
@@ -211,7 +211,7 @@ pred.simple = wsl.predict.pres(x = ppm.simple,
                          thres = get_thres(eval.simple,mean=FALSE),
                          raster = TRUE)
                          
-# e.g. or resetting a potential fitted bias covariate to 0s:
+# e.g. or resetting a potential fitted bias covariate to 0 values:
 pred.bias = wsl.predict.pres(x = ppm.simple,
                              predat = rst,
                              thres = get_thres(eval.bias,mean=FALSE),
