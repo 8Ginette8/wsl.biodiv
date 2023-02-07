@@ -63,44 +63,38 @@ Boyce index is evaluated. Furthermore, the threshold applied is returned.
 }
 \examples{
 
-
-### Load
-
+# Load
 data(AlpineConvention_lonlat)
 data(exrst)
 rst = rst[[1:6]]
 data(xy_ppm)
 mypoints = xy.ppm[,c("x","y")]
 
-### Define mask
-
+# Define mask
 maskR = mask(rst[[1]],shp.lonlat)
 
-### Run 'wsl.ppm.window' function
-
+# Run 'wsl.ppm.window' function
 wind = wsl.ppm.window(mask = maskR,
                       val = 1,
                       owin = TRUE)
 
-### Define quadrature points for 'wsl.ppmGlasso'
-
-   # Grid regular
+# nDefine quadrature points for 'wsl.ppmGlasso'
 quadG1 = wsl.quadrature(mask = maskR,
                         area.win = wind,
                         random = FALSE,
                         lasso = TRUE,
                         env_vars = rst)
 
-### Define your environments
-
-   # For 'wsl.ppmGlasso' (observations focus)
+# Define your environments
 envG = raster::extract(rst,mypoints)
 
-### Modelling
+# Spatial block cross-validation
+to_b_xy = rbind(mypoints,quadG1@coords)
+toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))
+block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSamp)
 
-   # 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
-       # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
-
+# 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
+   # Complex PPP lasso (poly = TRUE & lasso=TRUE)
 ppm.lasso = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
@@ -119,36 +113,49 @@ ppm.lasso = wsl.ppmGlasso(pres = mypoints,
                        standardize = TRUE,
                        nfolds = 5,
                        nlambda = 100)
+summary(ppm.lasso)
 
-       # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
-
+  # Simple PPP (poly = FALSE & lasso=FALSE) + block-cross validation
 ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg2",
-                       replicatetype = "cv",
+                       replicatetype = "block-cv",
                        reps = 5,
-                       strata = NA,
+                       strata = block_cv_xy,
                        save = FALSE,
                        project = "lasso_eg2",
                        path = NA,
                        poly = FALSE,
                        lasso = FALSE)
+summary(ppm.simple)
 
 ### Evaluation
-
-   # Example for 'wsl.ppmGlasso'
-
 eval1 = wsl.evaluate.pres(x = ppm.lasso,
                           env_vars = rst)
-
-eval2 = wsl.evaluate.pres(x = ppm.simple,,
+eval2 = wsl.evaluate.pres(x = ppm.simple,
                           env_vars = rst,
-                          thres = 0.001)
-
-summmary(eval1)
+                          thres = 0.001,
+                          speedup = TRUE,
+                          bias_cov=c(1,0,0,0,1,1))
+eval3 = wsl.evaluate.pa(x = ppm.lasso,
+                        crit="maxTSS",
+                        pres_only = TRUE,
+                        bias_cov=c(1,0,0,1,1,0))
+eval4 = wsl.evaluate.pa(x = ppm.simple,
+                       crit="pp=op",
+                       pres_only = TRUE)
+summary(eval1)
 summary(eval2)
+summary(eval3)
+summary(eval4)
+
+### Thresholds
+get_thres(eval1, mean = FALSE)
+get_thres(eval2, mean = TRUE)
+get_thres(eval3, mean = TRUE)
+get_thres(eval4, mean = FALSE)
 
 }
 \author{

@@ -84,7 +84,7 @@ plot(env[,c(1,3)],col=strt.6)
 
 ### Test out function by using the 'pres' argument
 
-# Load data
+# Load
 data(AlpineConvention_lonlat)
 data(exrst)
 rst = rst[[1:6]]
@@ -99,7 +99,7 @@ wind = wsl.ppm.window(mask = maskR,
                       val = 1,
                       owin = TRUE)
 
-# Define quadrature points for 'wsl.ppmGlasso'
+# nDefine quadrature points for 'wsl.ppmGlasso'
 quadG1 = wsl.quadrature(mask = maskR,
                         area.win = wind,
                         random = FALSE,

@@ -67,7 +67,7 @@
 #' 
 #' ### Test out function by using the 'pres' argument
 #' 
-#' # Load data
+#' # Load
 #' data(AlpineConvention_lonlat)
 #' data(exrst)
 #' rst = rst[[1:6]]
@@ -82,7 +82,7 @@
 #'                       val = 1,
 #'                       owin = TRUE)
 #' 
-#' # Define quadrature points for 'wsl.ppmGlasso'
+#' # nDefine quadrature points for 'wsl.ppmGlasso'
 #' quadG1 = wsl.quadrature(mask = maskR,
 #'                         area.win = wind,
 #'                         random = FALSE,
@@ -91,7 +91,7 @@
 #' 
 #' # Define your environments
 #' envG = raster::extract(rst,mypoints)
-#'
+#' 
 #' # Spatial block cross-validation
 #' to_b_xy = rbind(mypoints,quadG1@coords)
 #' toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))

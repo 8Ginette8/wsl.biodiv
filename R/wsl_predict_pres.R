@@ -8,7 +8,7 @@
 #'
 #' @param x An object of class wsl.fit
 #' @param thres Optional. Object of the same length as the number of replicates, or model
-#' types if a mean is applied accross model types. Obtained with 'get_thres'
+#' types if a mean is applied accross model types. Set a custom threshold.
 #' @param predat Same spatial layers used in the fitted model or an object of class 'data.frame' or 
 #' 'matrix' defining a sample of the target layers by keeping same order for columns. If spatial layers,
 #' when wsl.ppmGlasso' used, object of class 'RasterStack' or RasterBrick'.
@@ -101,14 +101,16 @@
 #' eval2 = wsl.evaluate.pres(x = ppm.simple,
 #'                           env_vars = rst,
 #'                           thres = 0.001,
-#'                           speedup = TRUE)
+#'                           speedup = TRUE,
+#'                           bias_cov=c(1,0,0,0,1,1))
 #' eval3 = wsl.evaluate.pa(x = ppm.lasso,
 #'                         crit="maxTSS",
-#'                         pres_only = TRUE)
+#'                         pres_only = TRUE,
+#'                         bias_cov=c(1,0,0,1,1,0))
 #' eval4 = wsl.evaluate.pa(x = ppm.simple,
-#'                         crit="pp=op",
-#'                         pres_only = TRUE)
-#' summmary(eval1)
+#'                        crit="pp=op",
+#'                        pres_only = TRUE)
+#' summary(eval1)
 #' summary(eval2)
 #' summary(eval3)
 #' summary(eval4)
@@ -116,8 +118,8 @@
 #' ### Thresholds
 #' get_thres(eval1, mean = FALSE)
 #' get_thres(eval2, mean = TRUE)
-#' get_thres(eval3, mean = FALSE)
-#' get_thres(eval4, mean = TRUE)
+#' get_thres(eval3, mean = TRUE)
+#' get_thres(eval4, mean = FALSE)
 #' 
 #' ### Predictions
 #' pred1 = wsl.predict.pres(x = ppm.lasso,
@@ -129,17 +131,18 @@
 #' 
 #' pred2 = wsl.predict.pres(x = ppm.simple,
 #'                          predat = rst,
-#'                          raster = TRUE)
+#'                          raster = TRUE,
+#'                          bias_cov=c(1,0,0,0,1,1))
 #' par(mfrow=c(2,3))
 #' sapply(1:5,function(x) plot(pred2@predictions[[x]][[1]]))
 #' 
 #' pred3 = wsl.predict.pres(x = ppm.lasso,
 #'                          predat = rst,
 #'                          thres = get_thres(eval1,mean=TRUE),
-#'                          raster = TRUE)
+#'                          raster = TRUE,
+#'                          bias_cov=c(1,0,0,1,1,0))
 #' par(mfrow=c(2,3))
 #' sapply(1:5,function(x) plot(pred3@predictions[[x]][[1]]))
-#' 
 #' pred4 = wsl.predict.pres(x = ppm.simple,
 #'                          predat = rst,
 #'                          raster = FALSE)
