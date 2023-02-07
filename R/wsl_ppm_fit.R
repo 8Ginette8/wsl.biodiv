@@ -16,7 +16,8 @@
 #' @param quadPoints If 'wsl.ppmGlasso' used, must a 'wsl.quads' object generated with 'wsl.quadrature'
 #' function and 'lasso=TRUE'.
 #' @param asurface The surface of the study area in square kilometers.
-#' @param poly If TRUE, PPPM fits a second order polynomial regression.
+#' @param poly If TRUE, PPPM fits a second order polynomial regression or a custom equation (see 'formula')
+#' @param formula Optional. Equation of desired fit (in developments...).
 #' @param which_poly Which predictors should be using polynomial terms? Use a binary vector that
 #' specify which variables/predictors. Length of vector must be equal to the number of input variables.
 #' '1' stands for poly=TRUE whereas '0' stands for poly=FALSE. Default is polynomial for all if poly=TRUE.
@@ -33,7 +34,6 @@
 #' (later used to define saving directories).
 #' @param path Where to save? (not implemented yet).
 #' @param mod_tag Descriptive label for current model.
-#' @param formula Equation of the desired fit.
 #' @param penalty.glmnet If 'lasso=TRUE', a binary vector that specify which variables/predictors
 #' used to model should be shrinked. Length of vector must be equal to the number of input
 #' variables. '1' stands for shrinkage whereas '0' stands for no shrinkage, i.e. the variable

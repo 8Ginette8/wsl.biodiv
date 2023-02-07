@@ -57,7 +57,7 @@ Note: the vector must first integrate CV information for observation points.}
 
 \item{mod_tag}{Descriptive label for current model.}
 
-\item{poly}{If TRUE, PPPM fits a second order polynomial regression.}
+\item{poly}{If TRUE, PPPM fits a second order polynomial regression or a custom equation (see 'formula')}
 
 \item{which_poly}{Which predictors should be using polynomial terms? Use a binary vector that
 specify which variables/predictors. Length of vector must be equal to the number of input variables.
@@ -76,7 +76,7 @@ regularisation. To notice that the package's argument 'penalty.factor' is not ne
 here. If used, the parameter 'penalty.glmnet' must instead be filled for each 'env_vars'.
 If lasso = FALSE, arguments passed on to the glm("poisson") function.}
 
-\item{formula}{Equation of the desired fit.}
+\item{formula}{Optional. Equation of desired fit (in developments...).}
 }
 \value{
 Object of class wsl.fit including slots for meta info, testing data for
