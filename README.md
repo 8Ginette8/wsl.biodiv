@@ -24,6 +24,13 @@ library(wsl.biodiv)
 data("Anguilla_train")
 vrs = c("SegSumT","USRainDays","USSlope")
 env = Anguilla_train[,vrs]
+
+# Alps data
+data(AlpineConvention_lonlat)
+data(exrst)
+rst = rst[[1:6]]
+data(xy_ppm)
+mypoints = xy.ppm[,c("x","y")]
 ```
 
 Custom parameters for the ensemble model:
@@ -71,16 +78,8 @@ pred4=wsl.predict.pa(modi4,predat=env)
 pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Point process model (PPM)
-
-Load data:
-``` r
-data(AlpineConvention_lonlat)
-data(exrst)
-rst = rst[[1:6]]
-data(xy_ppm)
-mypoints = xy.ppm[,c("x","y")]
-```
+## Point process models (PPM)
+### Data preparation
 
 Define a mask of your study area, to set a window and sample quadrature points:
 ``` r
@@ -99,6 +98,23 @@ quadG1 = wsl.quadrature(mask = maskR,
                         lasso = TRUE,
                         env_vars = rst)
 ```
+
+### Block cross-validation (BCV)
+
+Spatial BCV:
+``` r
+to_b_xy = rbind(mypoints,quadG1@coords)
+toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))
+block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSamp)
+```
+
+Environmental BCV:
+``` r
+to_b_env = rbind(envG,quadG1@Qenv[,-1])
+block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
+```
+
+### Run PPMs
 
 Fit a PPM with an Elastic Net regularization:
 ``` r
