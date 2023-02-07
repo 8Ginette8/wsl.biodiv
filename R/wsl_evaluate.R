@@ -214,8 +214,10 @@ wsl.evaluate.pa<-function(x,tester=data.frame(),window=NULL,thres=numeric(),
           pol = grepl("poly=TRUE",txt.call)
 
           # Provide which variables were poly() + associated coefs
+           if (pol) {
+            Xcoefs = x@coefs[[i]]
+          }
           Xmeta = x@meta
-          Xcoefs = x@coefs[[i]]
         
           pred = prd.pres(mod=x@fits[[i]][[j]],env_vars=testa[[i]],valid.pres=NULL,
             window=window,polly=pol,meta=Xmeta,coefs=Xcoefs,id.fact=id.factor)

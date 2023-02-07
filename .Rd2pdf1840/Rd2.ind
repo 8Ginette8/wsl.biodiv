@@ -1,0 +1,114 @@
+\begin{theindex}
+
+  \item \texttt  {boycei}, \hyperpage{3}
+
+  \indexspace
+
+  \item \texttt  {ceval}, \hyperpage{4}
+  \item \texttt  {copy\_PseuAbs}, \hyperpage{4}
+  \item \texttt  {create\_envstrat}, \hyperpage{6}
+
+  \indexspace
+
+  \item \texttt  {df\_or\_rast}, \hyperpage{6}
+
+  \indexspace
+
+  \item \texttt  {eco.adj.D2.glm}, \hyperpage{7}
+  \item \texttt  {ecoBoyce}, \hyperpage{7}
+
+  \indexspace
+
+  \item \texttt  {fitdoc}, \hyperpage{7}
+  \item \texttt  {fitppm}, \hyperpage{13}
+
+  \indexspace
+
+  \item \texttt  {get\_thres}, \hyperpage{16}
+
+  \indexspace
+
+  \item \texttt  {hde}, \hyperpage{17}
+
+  \indexspace
+
+  \item \texttt  {make\_blocks}, \hyperpage{18}
+  \item \texttt  {make\_tiles}, \hyperpage{20}
+  \item \texttt  {multi}, \hyperpage{21}
+  \item \texttt  {multi.input} \textit  {(\texttt  {multi.input-class})}, 
+		\hyperpage{22}
+  \item \texttt  {multi.input-class}, \hyperpage{22}
+
+  \indexspace
+
+  \item \texttt  {optme}, \hyperpage{22}
+
+  \indexspace
+
+  \item \texttt  {prd.pa}, \hyperpage{23}
+  \item \texttt  {prd.pres}, \hyperpage{23}
+  \item \texttt  {preps}, \hyperpage{24}
+  \item \texttt  {preva.meta}, \hyperpage{24}
+  \item \texttt  {prop.sampling}, \hyperpage{24}
+  \item \texttt  {pseu.targr}, \hyperpage{25}
+
+  \indexspace
+
+  \item \texttt  {stratify}, \hyperpage{27}
+
+  \indexspace
+
+  \item \texttt  {thin\_them}, \hyperpage{28}
+
+  \indexspace
+
+  \item \texttt  {upsample\_strategic}, \hyperpage{28}
+  \item \texttt  {upsample\_thin}, \hyperpage{29}
+
+  \indexspace
+
+  \item \texttt  {wsl.ann} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.ebc}, \hyperpage{30}
+  \item \texttt  {wsl.evaluate.pa}, \hyperpage{31}
+  \item \texttt  {wsl.evaluate.pres}, \hyperpage{33}
+  \item \texttt  {wsl.evaluation} \textit  {(\texttt  {wsl.evaluation-class})}, 
+		\hyperpage{36}
+  \item \texttt  {wsl.evaluation-class}, \hyperpage{36}
+  \item \texttt  {wsl.fit} \textit  {(\texttt  {wsl.fit-class})}, 
+		\hyperpage{37}
+  \item \texttt  {wsl.fit-class}, \hyperpage{37}
+  \item \texttt  {wsl.flex} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.gam} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.gbm} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.glm} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.maxent} \textit  {(\texttt  {fitdoc})}, 
+		\hyperpage{7}
+  \item \texttt  {wsl.obs.filter}, \hyperpage{37}
+  \item \texttt  {wsl.ppm.env}, \hyperpage{39}
+  \item \texttt  {wsl.ppm.qscheme}, \hyperpage{40}
+  \item \texttt  {wsl.ppm.window}, \hyperpage{40}
+  \item \texttt  {wsl.ppmGlasso} \textit  {(\texttt  {fitppm})}, 
+		\hyperpage{13}
+  \item \texttt  {wsl.predict.pa}, \hyperpage{41}
+  \item \texttt  {wsl.predict.pres}, \hyperpage{45}
+  \item \texttt  {wsl.prediction} \textit  {(\texttt  {wsl.prediction-class})}, 
+		\hyperpage{48}
+  \item \texttt  {wsl.prediction-class}, \hyperpage{48}
+  \item \texttt  {wsl.pseudoabsences} \textit  {(\texttt  {wsl.pseudoabsences-class})}, 
+		\hyperpage{48}
+  \item \texttt  {wsl.pseudoabsences-class}, \hyperpage{48}
+  \item \texttt  {wsl.quadrature}, \hyperpage{49}
+  \item \texttt  {wsl.quads} \textit  {(\texttt  {wsl.quads-class})}, 
+		\hyperpage{50}
+  \item \texttt  {wsl.quads-class}, \hyperpage{50}
+  \item \texttt  {wsl.samplePseuAbs}, \hyperpage{51}
+  \item \texttt  {wsl.test.quads}, \hyperpage{57}
+  \item \texttt  {wsl.varKeep}, \hyperpage{58}
+  \item \texttt  {wsl.varPPower}, \hyperpage{60}
+
+\end{theindex}

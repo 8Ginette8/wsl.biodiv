@@ -320,7 +320,9 @@ wsl.evaluate.pres<-function(x,tester=data.frame(),env_vars,window=NULL,thres=num
           pol = grepl("poly=TRUE",txt.call)
 
           # Provide which variables were poly() + associated coefs
-          Xcoefs=x@coefs[[i]]
+          if (pol) {
+            Xcoefs = x@coefs[[i]]
+          }
           
           # Make prediction & obtain boyce output
           if (speedup) {

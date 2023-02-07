@@ -12,28 +12,28 @@
 #' @param pres Object of class 'data.frame' or 'matrix'. Coordinates xy of Species observations.
 #' @param env_vars If 'wsl.ppmGlasso' used, must be an object of class 'matrix' or 'data.frame'
 #' with environmental predictor values. Note that categorical predictor values must be of class factor for
-#' both 'env_vars' and 'quadPoints@Qenv'
+#' both 'env_vars' and 'quadPoints@Qenv'.
 #' @param quadPoints If 'wsl.ppmGlasso' used, must a 'wsl.quads' object generated with 'wsl.quadrature'
 #' function and 'lasso=TRUE'.
-#' @param asurface Only when 'wsl.ppmGlasso' used.The surface of the study area in square kilometers
-#' @param poly If TRUE, PPPM fits a second order polynomial regression
+#' @param asurface The surface of the study area in square kilometers.
+#' @param poly If TRUE, PPPM fits a second order polynomial regression.
 #' @param which_poly Which predictors should be using polynomial terms? Use a binary vector that
 #' specify which variables/predictors. Length of vector must be equal to the number of input variables.
 #' '1' stands for poly=TRUE whereas '0' stands for poly=FALSE. Default is polynomial for all if poly=TRUE.
-#' @param lasso If FALSE no regularisation is applied
-#' @param taxon Name of the taxon for which models are fitted
+#' @param lasso If FALSE no regularisation is applied.
+#' @param taxon Name of the taxon for which models are fitted.
 #' @param replicatetype (How) should replicates be generated? may be 'none', 'splitsample',
-#' 'cv' or 'block-cv'
-#' @param reps Number of replicates
+#' 'cv' or 'block-cv'.
+#' @param reps Number of replicates.
 #' @param strata A numeric vector of the same length as observations + quadrature points with
 #' integers assigning cross validation replicates. Only used when replicatetype='block-cv'.
 #' Note: the vector must first integrate CV information for observation points.
-#' @param save  Should the model be saved in a structured way? (not implemented yet)
+#' @param save  Should the model be saved in a structured way? (not implemented yet).
 #' @param project Character indicating the name of the project within which the models are run
-#' (later used to define saving directories)
-#' @param path Where to save? (not implemented yet)
-#' @param mod_tag Descriptive label for current model
-#' @param formula Equation of the desired fit
+#' (later used to define saving directories).
+#' @param path Where to save? (not implemented yet).
+#' @param mod_tag Descriptive label for current model.
+#' @param formula Equation of the desired fit.
 #' @param penalty.glmnet If 'lasso=TRUE', a binary vector that specify which variables/predictors
 #' used to model should be shrinked. Length of vector must be equal to the number of input
 #' variables. '1' stands for shrinkage whereas '0' stands for no shrinkage, i.e. the variable
@@ -44,7 +44,7 @@
 #' here. If used, the parameter 'penalty.glmnet' must instead be filled for each 'env_vars'.
 #' If lasso = FALSE, arguments passed on to the glm("poisson") function.
 #' @return Object of class wsl.fit including slots for meta info, testing data for
-#' evaluation, and model objects
+#' evaluation, and model objects.
 #' @author Yohann Chauvier, Philipp Brun
 #' @name fitppm
 #' @examples

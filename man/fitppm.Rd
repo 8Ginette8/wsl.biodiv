@@ -30,40 +30,40 @@ wsl.ppmGlasso(
 
 \item{env_vars}{If 'wsl.ppmGlasso' used, must be an object of class 'matrix' or 'data.frame'
 with environmental predictor values. Note that categorical predictor values must be of class factor for
-both 'env_vars' and 'quadPoints@Qenv'}
+both 'env_vars' and 'quadPoints@Qenv'.}
 
 \item{quadPoints}{If 'wsl.ppmGlasso' used, must a 'wsl.quads' object generated with 'wsl.quadrature'
 function and 'lasso=TRUE'.}
 
-\item{asurface}{Only when 'wsl.ppmGlasso' used.The surface of the study area in square kilometers}
+\item{asurface}{The surface of the study area in square kilometers.}
 
-\item{taxon}{Name of the taxon for which models are fitted}
+\item{taxon}{Name of the taxon for which models are fitted.}
 
 \item{replicatetype}{(How) should replicates be generated? may be 'none', 'splitsample',
-'cv' or 'block-cv'}
+'cv' or 'block-cv'.}
 
-\item{reps}{Number of replicates}
+\item{reps}{Number of replicates.}
 
 \item{strata}{A numeric vector of the same length as observations + quadrature points with
 integers assigning cross validation replicates. Only used when replicatetype='block-cv'.
 Note: the vector must first integrate CV information for observation points.}
 
-\item{save}{Should the model be saved in a structured way? (not implemented yet)}
+\item{save}{Should the model be saved in a structured way? (not implemented yet).}
 
 \item{project}{Character indicating the name of the project within which the models are run
-(later used to define saving directories)}
+(later used to define saving directories).}
 
-\item{path}{Where to save? (not implemented yet)}
+\item{path}{Where to save? (not implemented yet).}
 
-\item{mod_tag}{Descriptive label for current model}
+\item{mod_tag}{Descriptive label for current model.}
 
-\item{poly}{If TRUE, PPPM fits a second order polynomial regression}
+\item{poly}{If TRUE, PPPM fits a second order polynomial regression.}
 
 \item{which_poly}{Which predictors should be using polynomial terms? Use a binary vector that
 specify which variables/predictors. Length of vector must be equal to the number of input variables.
 '1' stands for poly=TRUE whereas '0' stands for poly=FALSE. Default is polynomial for all if poly=TRUE.}
 
-\item{lasso}{If FALSE no regularisation is applied}
+\item{lasso}{If FALSE no regularisation is applied.}
 
 \item{penalty.glmnet}{If 'lasso=TRUE', a binary vector that specify which variables/predictors
 used to model should be shrinked. Length of vector must be equal to the number of input
@@ -76,11 +76,11 @@ regularisation. To notice that the package's argument 'penalty.factor' is not ne
 here. If used, the parameter 'penalty.glmnet' must instead be filled for each 'env_vars'.
 If lasso = FALSE, arguments passed on to the glm("poisson") function.}
 
-\item{formula}{Equation of the desired fit}
+\item{formula}{Equation of the desired fit.}
 }
 \value{
 Object of class wsl.fit including slots for meta info, testing data for
-evaluation, and model objects
+evaluation, and model objects.
 }
 \description{
 PPPM (Poisson Point Process Models) is a modelling approach genrally design to use
