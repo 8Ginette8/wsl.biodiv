@@ -783,25 +783,3 @@ wsl.samplePseuAbs<-function(n=10000,
   return(out)
 
 }
-
-
-
-
-#
-
-#type="env.semi.strat" #geo.strat
-#n=8000
-#env.stack=env.stk
-#pres=spp
-#template_dir="../raw_treemap_pseudoabsences/"
-#target.group_dir='../raw_treemap_pseudoabsences/target_group'
-#env.strat_path="../raw_treemap_pseudoabsences/"
-#geodist_fact=1
-#geores_fact=10
-#geo_nrep=7
-#taxon=spi_name
-#force_spat_thin = "both"
-#limdist=NA
-#set_max_npres_to_nabs=TRUE
-#rAll=TRUE
-#add.strat=0

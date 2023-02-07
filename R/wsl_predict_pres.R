@@ -60,7 +60,7 @@
 #'    # 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
 #'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 #' 
-#' lasso1 = wsl.ppmGlasso(pres = mypoints,
+#' ppm.lasso = wsl.ppmGlasso(pres = mypoints,
 #'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
@@ -81,7 +81,7 @@
 #' 
 #'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 #' 
-#' lasso2 = wsl.ppmGlasso(pres = mypoints,
+#' ppm.simple = wsl.ppmGlasso(pres = mypoints,
 #'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
 #'                        env_vars = envG,
@@ -99,10 +99,10 @@
 #' 
 #'    # Example for 'wsl.ppmGlasso'
 #' 
-#' eval1 = wsl.evaluate.pres(x = lasso1,
+#' eval1 = wsl.evaluate.pres(x = ppm.lasso,
 #'                           env_vars = rst)
 #' 
-#' eval2 = wsl.evaluate.pres(x = lasso2,,
+#' eval2 = wsl.evaluate.pres(x = ppm.simple,,
 #'                           env_vars = rst,
 #'                           thres = 0.001)
 #' 
@@ -120,7 +120,7 @@
 #' ### Predictions
 #' 
 #'    # 'wsl.ppmGlasso'
-#' pred1 = wsl.predict.pres(x = lasso1,
+#' pred1 = wsl.predict.pres(x = ppm.lasso,
 #'                          predat = rst,
 #'                          thres = get_thres(eval1,mean=FALSE),
 #'                          raster = TRUE)
@@ -128,14 +128,14 @@
 #' par(mfrow=c(2,3))
 #' sapply(1:5,function(x) plot(pred1@predictions[[x]][[1]]))
 #' 
-#' pred2 = wsl.predict.pres(x = lasso2,
+#' pred2 = wsl.predict.pres(x = ppm.simple,
 #'                          predat = rst,
 #'                          raster = TRUE)
 #' 
 #' par(mfrow=c(2,3))
 #' sapply(1:5,function(x) plot(pred2@predictions[[x]][[1]]))
 #' 
-#' pred3 = wsl.predict.pres(x = lasso1,
+#' pred3 = wsl.predict.pres(x = ppm.lasso,
 #'                          predat = rst,
 #'                          thres = get_thres(eval1,mean=TRUE),
 #'                          raster = TRUE)
@@ -143,7 +143,7 @@
 #' par(mfrow=c(2,3))
 #' sapply(1:5,function(x) plot(pred3@predictions[[x]][[1]]))
 #' 
-#' pred4 = wsl.predict.pres(x = lasso2,
+#' pred4 = wsl.predict.pres(x = ppm.simple,
 #'                          predat = rst,
 #'                          raster = FALSE)
 #' 

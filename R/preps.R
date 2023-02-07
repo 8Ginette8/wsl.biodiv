@@ -92,7 +92,7 @@ preps=function(env=parent.frame(),call){
 
   # Add infos on if predictor value = factor
   if (!(identical(grep("ppmG",call.t),integer(0)))){
-    obs.fact=sapply(env$env_vars,class)%in%"factor"
+    obs.fact=sapply(as.data.frame(env$env_vars),class)%in%"factor"
     quad.fact=sapply(env$quadPoints@Qenv[,-1],class)%in%"factor"
     if (any((obs.fact+quad.fact)%in%1)){
       stop("Only 'env_vars' or 'quadPoints' contains predictor values of class 'factor'...")
