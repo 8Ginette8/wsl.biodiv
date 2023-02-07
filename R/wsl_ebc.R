@@ -299,7 +299,7 @@ wsl.ebc=function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
 			# Store with cluster ID depending on the output
 			if (nrow(do.samp)%in%0){
 				next
-			} else if (class(do.samp) %in% "numeric") {
+			} else if (class(do.samp)[1] %in% "numeric") {
         		do.samp=matrix(do.samp,ncol=2)
         		colnames(do.samp)=c("x", "y")
     		}
