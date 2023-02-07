@@ -57,8 +57,19 @@
 #' 
 #' ### Modelling
 #' 
+#'    # Spatial block cross-validation
+#' 
+#' to_b_xy = rbind(mypoints,quadG1@coords)
+#' toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))
+#' block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSamp)
+#'  
+#'    # Environmental block cross-validation
+#' 
+#' to_b_env = rbind(envG,quadG1@Qenv)
+#' block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
+#' 
 #'    # 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
-#'        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
+#'        # Complex PPP lasso (poly = TRUE & lasso=TRUE)
 #' 
 #' ppm.lasso = wsl.ppmGlasso(pres = mypoints,
 #'                        quadPoints = quadG1,
@@ -78,9 +89,10 @@
 #'                        standardize = TRUE,
 #'                        nfolds = 5,
 #'                        nlambda = 100)
+#' summary(ppm.lasso)
 #' 
-#'        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
-#' 
+#'        # Simple PPP (poly = FALSE & lasso=FALSE) + block-cross validation
+#'
 #' ppm.simple = wsl.ppmGlasso(pres = mypoints,
 #'                        quadPoints = quadG1,
 #'                        asurface = raster::area(shp.lonlat)/1000,
@@ -88,12 +100,13 @@
 #'                        taxon = "species_eg2",
 #'                        replicatetype = "cv",
 #'                        reps = 5,
-#'                        strata = NA,
+#'                        strata = block_cv,
 #'                        save = FALSE,
 #'                        project = "lasso_eg2",
 #'                        path = NA,
 #'                        poly = FALSE,
 #'                        lasso = FALSE)
+#' summary(ppm.simple)
 #' 
 #' ### Evaluation
 #' 
@@ -102,12 +115,23 @@
 #' eval1 = wsl.evaluate.pres(x = ppm.lasso,
 #'                           env_vars = rst)
 #' 
-#' eval2 = wsl.evaluate.pres(x = ppm.simple,,
+#' eval2 = wsl.evaluate.pres(x = lasso2,
 #'                           env_vars = rst,
-#'                           thres = 0.001)
+#'                           thres = 0.001,
+#'                           speedup = TRUE)
+#' 
+#' eval3 = wsl.evaluate.pa(x = lasso1,
+#'                         crit="maxTSS",
+#'                         pres_only = TRUE)
+#' 
+#' eval4 = wsl.evaluate.pa(x = lasso2,
+#'                         crit="pp=op",
+#'                         pres_only = TRUE)
 #' 
 #' summmary(eval1)
 #' summary(eval2)
+#' summary(eval3)
+#' summary(eval4)
 #' 
 #' ### Thresholds
 #' 

@@ -5,21 +5,23 @@
 #'
 #' Creates a stratum vector based on a data.frame with n columns. If the data.frame
 #' has one column strata are created based on clusters separated by quantiles. If
-#' the data.frame has two or more columns, strata ere created based on k-medoid
+#' the data.frame has two or more columns, strata are created based on k-medoid
 #' clusters (function 'pam' from package cluster). Instead of a data.frame also the
 #' argument 'npoints' can be provided, then groups are created by random sampling.
 #' An opitimization algorithm (function 'gridSearch' from package NMOF) optimizes
 #' for equal stratum sizes.
 #'
-#' @param nstrat Number of approximately equal-sized classes to separate groups
-#' in block-cross validation
+#' @param nstrat Number of approximately equal-sized classes to separate groups in block-cross validation
 #' @param df Object of class 'data.frame' with n columns containing critera for cluster building.
 #' Not necessary if argument npoints is supplied
 #' @param nclusters Number of clusters based on which strata should be built.
 #' Minimum is the same number as 'nstrat'. Maximum is nrow(df)/10.
+#' @param pres Binary vector. Optional argument. If 'df' is supplied, the argument can be used to
+#' save processing time or if number of row/points > 65,536 (pam hard-limit). '1' stands for the points
+#' on which k-medoid clustering is appplied (most likely the species observations), and '0' stands
+#' for the points on which K-nearest neighbors is applied relative to the '1' (most likely the absences,
+#' background points...). If 'df' is not supplied. For which points should random sampling be made? 
 #' @param npoints Optional argument if 'df' is not supplied. For how many points
-#' should random sampling be made?
-#' @param pres Optional argument if 'df' is not supplied. For how many points
 #' should random sampling be made?
 #' @return Object of class 'vector' of length nrow(df) or 'npoints', with integers defining
 #' different strata

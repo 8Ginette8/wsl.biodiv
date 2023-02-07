@@ -131,7 +131,7 @@ envG = raster::extract(rst,mypoints)
    # 'wsl.ppmGlasso' (alpha = 0.5 => Elastic net, see package 'glmnet')
        # Complex PPPM lasso (poly = TRUE & lasso=TRUE)
 
-lasso1 = wsl.ppmGlasso(pres = mypoints,
+ppm.lasso = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
@@ -152,7 +152,7 @@ lasso1 = wsl.ppmGlasso(pres = mypoints,
 
        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 
-lasso2 = wsl.ppmGlasso(pres = mypoints,
+ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
