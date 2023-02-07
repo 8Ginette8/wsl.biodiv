@@ -14,12 +14,10 @@ library(wsl.biodiv)
 # Example
 
 ## Ensemble model
+### Data preparation
 
-Load package & data:
+Load data:
 ``` r
-# Package
-library(wsl.biodiv)
-
 # Take anguilla data set from dismo package
 data("Anguilla_train")
 vrs = c("SegSumT","USRainDays","USSlope")
@@ -33,6 +31,8 @@ data(xy_ppm)
 mypoints = xy.ppm[,c("x","y")]
 ```
 
+### Run ensemble
+
 Custom parameters for the ensemble model:
 ``` r
 # Formulas
@@ -43,6 +43,7 @@ feat = c("linear=true","quadratic=true","hinge=true","product=true","threshold=f
 
 # All options
 modinp = list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
+   multi("gbm",list(formula=form.gbm,distribution = "bernoulli",interaction.depth = 1,shrinkage=.01,n.trees = 3500),"gbm-simple"), 
    multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
    multi("maxent",list(args=feat),"mxe-simple"),
    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"))
@@ -52,30 +53,35 @@ Calibrate ensemble model:
 ``` r
 modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                env_vars = env,
-               taxon="Angaus",
-               replicatetype="block-cv",
-               reps=3,
-               strata=sample(1:3,nrow(env),replace=TRUE),
-               project="multitest",
-               mod_args=modinp)
+               taxon = "Angaus",
+               replicatetype = "cv",
+               reps = 3,
+               strata = sample(1:3,nrow(env),replace=TRUE),
+               project = "multitest",
+               mod_args = modinp)
 summary(modi5)
 ```
+
+### Evaluate & predict
 
 Evaluate and display results:
 ``` r
 # Evaluate the model
-eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
+eval5 = wsl.evaluate.pa(modi5,crit = "maxTSS")
 
 # Get outputs or evaluation summary
 eval5
 summary(eval5)
+
+# Get thresholds
+thr.5 = get_thres(eval5, mean=FALSE)
 ```
 
-Let's predict now:
+Let's predict now (also works when 'predat' is a raster):
 ``` r
 # Make some predictions (works also with Raster objects)
-pred4=wsl.predict.pa(modi4,predat=env)
-pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
+pred4 = wsl.predict.pa(modi5,predat=env)
+pred5 = wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
 ## Point process models (PPM)
@@ -91,25 +97,26 @@ wind = wsl.ppm.window(mask = maskR,
                       val = 1,
                       owin = TRUE)
 
-# Define random  quadrature points for 'wsl.ppmGlasso'
+# nDefine quadrature points for 'wsl.ppmGlasso'
 quadG1 = wsl.quadrature(mask = maskR,
                         area.win = wind,
                         random = FALSE,
                         lasso = TRUE,
                         env_vars = rst)
+
+# Define your environments
+envG = raster::extract(rst,mypoints)
 ```
 
 ### Block cross-validation (BCV)
 
-Spatial BCV:
 ``` r
+# Spatial block cross-validation
 to_b_xy = rbind(mypoints,quadG1@coords)
 toSamp = c(rep(1,nrow(mypoints)),rep(0,nrow(quadG1@coords)))
 block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSamp)
-```
-
-Environmental BCV:
-``` r
+ 
+# Environmental block cross-validation
 to_b_env = rbind(envG,quadG1@Qenv[,-1])
 block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
 ```
@@ -139,16 +146,16 @@ ppm.lasso = wsl.ppmGlasso(pres = mypoints,
 summary(ppm.lasso)
 ```
 
-Fit a simple PPM (without any regularization) using block cross-validation:
+Fit a simple PPM (without any regularization, nor polynomial terms) using environmental block cross-validation:
 ``` r
 ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        quadPoints = quadG1,
                        asurface = raster::area(shp.lonlat)/1000,
                        env_vars = envG,
                        taxon = "species_eg2",
-                       replicatetype = "cv",
+                       replicatetype = "block-cv",
                        reps = 5,
-                       strata = NA,
+                       strata = block_cv_env,
                        save = FALSE,
                        project = "lasso_eg2",
                        path = NA,
@@ -156,6 +163,80 @@ ppm.simple = wsl.ppmGlasso(pres = mypoints,
                        lasso = FALSE)
 summary(ppm.simple)
 ```
+
+### Evaluate & predict
+
+Evaluation example using Boyce index:
+``` r
+eval.lasso = wsl.evaluate.pres(x = ppm.lasso,
+                               env_vars = rst,
+                               speedup = TRUE)
+summary(eval.lasso)
+```
+
+Evaluation example using other binary metrics:
+``` r
+eval.simple = wsl.evaluate.pa(x = ppm.simple,
+                              crit = "maxTSS",
+                              pres_only = TRUE)
+summary(eval.simple)
+```
+
+Evaluation example by resetting a potential fitted bias covariate to 0 values (to remove sampling bias):
+``` r
+eval.bias = wsl.evaluate.pa(x = ppm.simple,
+                            crit = "maxTSS",
+                            pres_only = TRUE,
+                            bias_cov = c(1,1,1,1,1,0))
+summary(eval.bias)
+```
+
+Get calcluated thresholds (mean may be chosen):
+``` r
+get_thres(eval.lasso, mean = FALSE)
+get_thres(eval.simple, mean = TRUE)
+get_thres(eval.bias, mean = FALSE)
+```
+
+Now we can predict:
+``` r
+# e.g. without using the thresholds --> species 'abundances'
+pred.lasso = wsl.predict.pres(x = ppm.lasso,
+                         predat = rst,
+                         raster = TRUE)
+                         
+# e.g. using the thresholds --> species presences/absences
+pred.simple = wsl.predict.pres(x = ppm.simple,
+                         predat = rst,
+                         thres = get_thres(eval.simple,mean=FALSE),
+                         raster = TRUE)
+                         
+# e.g. or resetting a potential fitted bias covariate to 0 values:
+pred.bias = wsl.predict.pres(x = ppm.simple,
+                             predat = rst,
+                             thres = get_thres(eval.bias,mean=FALSE),
+                             raster = TRUE,
+                             bias_cov = c(1,1,1,1,1,0))
+```
+
+Finally let's see what distributions we obtain by plotting:
+``` r
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.lasso@predictions[[x]][[1]]))
+```
+![image](https://user-images.githubusercontent.com/43674773/217249539-61522c6b-3f8e-4779-9fa2-956549bb0397.png)
+
+``` r
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.simple@predictions[[x]][[1]]))
+```
+![image](https://user-images.githubusercontent.com/43674773/217249813-94ba9338-6f74-495c-bc9e-b750e1f2399c.png)
+
+``` r
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.bias@predictions[[x]][[1]]))
+```
+![image](https://user-images.githubusercontent.com/43674773/217249893-ee6c9c7c-9e26-4ffe-a1b7-f1debc69224b.png)
 
 # Citations
 
