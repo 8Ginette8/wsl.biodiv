@@ -187,7 +187,7 @@ Evaluation example by resetting a potential fitted bias covariate to 0 values (t
 eval.bias = wsl.evaluate.pa(x = ppm.simple,
                             crit = "maxTSS",
                             pres_only = TRUE,
-                            bias_cov = c(1,1,1,1,1,0)))
+                            bias_cov = c(1,1,1,1,1,0))
 summary(eval.bias)
 ```
 
