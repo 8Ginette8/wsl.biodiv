@@ -84,7 +84,7 @@ pred4 = wsl.predict.pa(modi5,predat=env)
 pred5 = wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Point process models (PPM)
+## Point process models (PPMs)
 ### Data preparation
 
 Define a mask of your study area, to set a window and sample quadrature points:
