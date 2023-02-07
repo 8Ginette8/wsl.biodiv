@@ -118,14 +118,14 @@ summary(ppm.simple)
 ### Evaluation
 eval1 = wsl.evaluate.pres(x = ppm.lasso,
                           env_vars = rst)
-eval2 = wsl.evaluate.pres(x = lasso2,
+eval2 = wsl.evaluate.pres(x = ppm.simple,
                           env_vars = rst,
                           thres = 0.001,
                           speedup = TRUE)
-eval3 = wsl.evaluate.pa(x = lasso1,
+eval3 = wsl.evaluate.pa(x = ppm.lasso,
                         crit="maxTSS",
                         pres_only = TRUE)
-eval4 = wsl.evaluate.pa(x = lasso2,
+eval4 = wsl.evaluate.pa(x = ppm.simple,
                         crit="pp=op",
                         pres_only = TRUE)
 summmary(eval1)
@@ -135,9 +135,9 @@ summary(eval4)
 
 ### Thresholds
 get_thres(eval1, mean = FALSE)
-get_thres(eval1, mean = TRUE)
-get_thres(eval2, mean = FALSE)
 get_thres(eval2, mean = TRUE)
+get_thres(eval3, mean = FALSE)
+get_thres(eval4, mean = TRUE)
 
 ### Predictions
 pred1 = wsl.predict.pres(x = ppm.lasso,

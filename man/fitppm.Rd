@@ -148,7 +148,8 @@ ppm.lasso = wsl.ppmGlasso(pres = mypoints,
                        type.measure = "mse",
                        standardize = TRUE,
                        nfolds = 5,
-                       nlambda = 100)
+                       nlambda = 100,
+                       penalty.glmnet=c(1,0,1,1,1,1))
 
        # Simple PPPM non lasso (poly = FALSE & lasso=FALSE)
 
