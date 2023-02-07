@@ -15,7 +15,7 @@ library(wsl.biodiv)
 
 ## Ensemble model
 
-Load package & data
+Load package & data:
 ``` r
 # Package
 library(wsl.biodiv)
@@ -26,7 +26,7 @@ vrs = c("SegSumT","USRainDays","USSlope")
 env = Anguilla_train[,vrs]
 ```
 
-Custom parameters for the ensemble model
+Custom parameters for the ensemble model:
 ``` r
 # Formulas
 form.glm = as.formula(paste("Presence~",paste(paste0("poly(",vrs,",2)"),collapse="+")))
@@ -41,7 +41,7 @@ modinp = list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",
    multi("randomForest",list(formula=form.gbm,ntree=500,maxnodes=NULL),"waud1"))
 ```
 
-Calibrate ensemble model
+Calibrate ensemble model:
 ``` r
 modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                env_vars = env,
@@ -51,9 +51,10 @@ modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                strata=sample(1:3,nrow(env),replace=TRUE),
                project="multitest",
                mod_args=modinp)
+summary(modi5)
 ```
 
-Evaluate and display results
+Evaluate and display results:
 ``` r
 # Evaluate the model
 eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
@@ -63,17 +64,81 @@ eval5
 summary(eval5)
 ```
 
-Let's predict now
+Let's predict now:
 ``` r
 # Make some predictions (works also with Raster objects)
 pred4=wsl.predict.pa(modi4,predat=env)
 pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Point process model (PPM) lasso
+## Point process model (PPM)
 
+Load data:
 ``` r
-...
+data(AlpineConvention_lonlat)
+data(exrst)
+rst = rst[[1:6]]
+data(xy_ppm)
+mypoints = xy.ppm[,c("x","y")]
+```
+
+Define a mask of your study area, to set a window and sample quadrature points:
+``` r
+# Define mask
+maskR = mask(rst[[1]],shp.lonlat)
+
+# Run 'wsl.ppm.window' function
+wind = wsl.ppm.window(mask = maskR,
+                      val = 1,
+                      owin = TRUE)
+
+# Define random  quadrature points for 'wsl.ppmGlasso'
+quadG1 = wsl.quadrature(mask = maskR,
+                        area.win = wind,
+                        random = FALSE,
+                        lasso = TRUE,
+                        env_vars = rst)
+```
+
+Fit a PPM with an Elastic Net regularization:
+``` r
+ppm.lasso = wsl.ppmGlasso(pres = mypoints,
+                       quadPoints = quadG1,
+                       asurface = raster::area(shp.lonlat)/1000,
+                       env_vars = envG,
+                       taxon = "species_eg1",
+                       replicatetype = "cv",
+                       reps = 5,
+                       strata = NA,
+                       save=FALSE,
+                       project = "lasso_eg1",
+                       path = NA,
+                       poly = TRUE,
+                       lasso = TRUE,
+                       alpha = 0.5,             # 0.5 = Elastic Net here
+                       type.measure = "mse",    # Other regularization parameters
+                       standardize = TRUE,      # ....
+                       nfolds = 5,              # ....
+                       nlambda = 100)           # ....see cv.glmnet() for more details
+summary(ppm.lasso)
+```
+
+Fit a simple PPM (without any regularization) using block cross-validation:
+``` r
+ppm.simple = wsl.ppmGlasso(pres = mypoints,
+                       quadPoints = quadG1,
+                       asurface = raster::area(shp.lonlat)/1000,
+                       env_vars = envG,
+                       taxon = "species_eg2",
+                       replicatetype = "cv",
+                       reps = 5,
+                       strata = NA,
+                       save = FALSE,
+                       project = "lasso_eg2",
+                       path = NA,
+                       poly = FALSE,
+                       lasso = FALSE)
+summary(ppm.simple)
 ```
 
 # Citations
