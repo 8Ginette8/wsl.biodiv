@@ -219,7 +219,7 @@ pred.bias = wsl.predict.pres(x = ppm.simple,
                              bias_cov = c(1,1,1,1,1,0))
 ```
 
-Finally let's see what distributions we obtain by plotting:
+Finally let's see what distributions we obtain across the European Alps by plotting:
 ``` r
 par(mfrow=c(2,3))
 sapply(1:5,function(x) plot(pred.lasso@predictions[[x]][[1]]))
