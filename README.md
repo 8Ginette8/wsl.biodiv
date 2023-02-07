@@ -42,7 +42,7 @@ form.gbm = as.formula(Presence ~ .)
 feat = c("linear=true","quadratic=true","hinge=true","product=true","threshold=false")
 
 # All options
-modinp=list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
+modinp = list(multi("glm",list(formula=form.glm,family="binomial"),"glm-simple",step=TRUE,weight=TRUE),
    multi("gbm",list(formula=form.gbm,distribution = "bernoulli",interaction.depth = 1,shrinkage=.01,n.trees = 3500),"gbm-simple"), 
    multi("gam",list(formula=form.gam,family="binomial"),"gam-simple",step=FALSE,weight=TRUE),
    multi("maxent",list(args=feat),"mxe-simple"),
@@ -53,12 +53,12 @@ Calibrate ensemble model:
 ``` r
 modi5 = wsl.flex(pa=Anguilla_train$Angaus,
                env_vars = env,
-               taxon="Angaus",
-               replicatetype="block-cv",
-               reps=3,
-               strata=sample(1:3,nrow(env),replace=TRUE),
-               project="multitest",
-               mod_args=modinp)
+               taxon = "Angaus",
+               replicatetype = "cv",
+               reps = 3,
+               strata = sample(1:3,nrow(env),replace=TRUE),
+               project = "multitest",
+               mod_args = modinp)
 summary(modi5)
 ```
 
@@ -67,21 +67,21 @@ summary(modi5)
 Evaluate and display results:
 ``` r
 # Evaluate the model
-eval5 = wsl.evaluate.pa(modi5,crit="maxTSS")
+eval5 = wsl.evaluate.pa(modi5,crit = "maxTSS")
 
 # Get outputs or evaluation summary
 eval5
 summary(eval5)
 
 # Get thresholds
-thr.5=get_thres(eval5, mean=FALSE)
+thr.5 = get_thres(eval5, mean=FALSE)
 ```
 
 Let's predict now:
 ``` r
 # Make some predictions (works also with Raster objects)
-pred4=wsl.predict.pa(modi5,predat=env)
-pred5=wsl.predict.pa(modi5,predat=env,thres=thr.5)
+pred4 = wsl.predict.pa(modi5,predat=env)
+pred5 = wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
 ## Point process models (PPM)
@@ -169,14 +169,15 @@ summary(ppm.simple)
 Evaluation example using Boyce index:
 ``` r
 eval.lasso = wsl.evaluate.pres(x = ppm.lasso,
-                               env_vars = rst)
+                               env_vars = rst,
+                               speedup = TRUE)
 summary(eval.lasso)
 ```
 
 Evaluation example using other pres-abs metrics:
 ``` r
 eval.simple = wsl.evaluate.pa(x = ppm.simple,
-                              crit="maxTSS",
+                              crit = "maxTSS",
                               pres_only = TRUE)
 summary(eval.simple)
 ```
@@ -184,9 +185,9 @@ summary(eval.simple)
 Evaluation example by resetting a potential fitted bias covariate to 0s:
 ``` r
 eval.bias = wsl.evaluate.pa(x = ppm.simple,
-                              crit="maxTSS",
-                              pres_only = TRUE,
-                              bias_cov=c(1,1,1,1,1,0)))
+                            crit = "maxTSS",
+                            pres_only = TRUE,
+                            bias_cov = c(1,1,1,1,1,0)))
 summary(eval.bias)
 ```
 
@@ -215,7 +216,7 @@ pred.bias = wsl.predict.pres(x = ppm.simple,
                              predat = rst,
                              thres = get_thres(eval.bias,mean=FALSE),
                              raster = TRUE,
-                             bias_cov=c(1,1,1,1,1,0))
+                             bias_cov = c(1,1,1,1,1,0))
 ```
 
 Finally let's see what distributions we obtain by plotting:
