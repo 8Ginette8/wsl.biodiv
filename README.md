@@ -1,4 +1,4 @@
-# wsl_biodiv
+# wsl.biodiv
 
 Developing a toolbox to efficiently handle SDMs in collaborative projects. Package aims at providing varied and flexible model fitting and tools for SDMs. Meta information should be stored (author, date, taxon,...) efficiently. Model evaluation and prediction should flexibly handle various fitted model objects. Evaluation metrics for presence-only and presence-absence models should be mutually implemented. Filtering and testing tools should help the user to find adequate predictors to apply meaningful models. Poisson Point Process models (PPPM) implementation should remain user-friendly. Regularization and variable selection should be implemented in this framework. Efficient methods to correct sampling bias in model fitting should be implements (pseudo-absences sempling strategies, environmental bias correction, bias covariate correction...)
 
@@ -84,7 +84,7 @@ pred4 = wsl.predict.pa(modi5,predat=env)
 pred5 = wsl.predict.pa(modi5,predat=env,thres=thr.5)
 ```
 
-## Point process models (PPM)
+## Point process models (PPMs)
 ### Data preparation
 
 Define a mask of your study area, to set a window and sample quadrature points:
@@ -219,7 +219,7 @@ pred.bias = wsl.predict.pres(x = ppm.simple,
                              bias_cov = c(1,1,1,1,1,0))
 ```
 
-Finally let's see what distributions we obtain by plotting:
+Finally let's see what distributions we obtain across the European Alps by plotting:
 ``` r
 par(mfrow=c(2,3))
 sapply(1:5,function(x) plot(pred.lasso@predictions[[x]][[1]]))
