@@ -77,7 +77,7 @@ summary(eval5)
 thr.5 = get_thres(eval5, mean=FALSE)
 ```
 
-Let's predict now:
+Let's predict now (also works when 'predat' is a raster):
 ``` r
 # Make some predictions (works also with Raster objects)
 pred4 = wsl.predict.pa(modi5,predat=env)
@@ -221,12 +221,22 @@ pred.bias = wsl.predict.pres(x = ppm.simple,
 
 Finally let's see what distributions we obtain by plotting:
 ``` r
-
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.lasso@predictions[[x]][[1]]))
 ```
+![image](https://user-images.githubusercontent.com/43674773/217249539-61522c6b-3f8e-4779-9fa2-956549bb0397.png)
 
 ``` r
-
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.simple@predictions[[x]][[1]]))
 ```
+![image](https://user-images.githubusercontent.com/43674773/217249813-94ba9338-6f74-495c-bc9e-b750e1f2399c.png)
+
+``` r
+par(mfrow=c(2,3))
+sapply(1:5,function(x) plot(pred.bias@predictions[[x]][[1]]))
+```
+![image](https://user-images.githubusercontent.com/43674773/217249893-ee6c9c7c-9e26-4ffe-a1b7-f1debc69224b.png)
 
 # Citations
 
