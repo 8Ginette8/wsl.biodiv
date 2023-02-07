@@ -174,7 +174,7 @@ eval.lasso = wsl.evaluate.pres(x = ppm.lasso,
 summary(eval.lasso)
 ```
 
-Evaluation example using other pres-abs metrics:
+Evaluation example using other binary metrics:
 ``` r
 eval.simple = wsl.evaluate.pa(x = ppm.simple,
                               crit = "maxTSS",
