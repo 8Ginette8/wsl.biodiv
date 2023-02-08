@@ -226,14 +226,14 @@ wsl.evaluate.pres<-function(x,tester=data.frame(),env_vars,window=NULL,thres=num
 
     # If pres_abs=TRUE, we go look for coordinates
     if (pres_abs){
-        coord.id <- lapply(x@tesdat,function(w) w$Presence%in%1)
+        coord.id = lapply(x@tesdat,function(w) w$Presence%in%1)
         if (!(length(x@coords)%in%0)){
-          testa.m <- lapply(1:length(coord.id),function(w) x@coords[[w]][coord.id[[w]],])
+          testa.m = lapply(1:length(coord.id),function(w) x@coords[[w]][coord.id[[w]],])
         } else {
-          testa.m=list()
+          testa.m = list()
         }
     } else {
-        testa.m <- lapply(x@tesdat,function(x) x[x$Presence%in%1,c("x","y")])
+        testa.m = lapply(x@tesdat,function(x) x[x$Presence%in%1,c("x","y")])
     }
   }
   

@@ -21,7 +21,7 @@ summary.wsl.evaluation=function(object){
   for(i in 1:length(object@performance)){
     mats[[i]]=do.call("cbind",object@performance[[i]])
   }
-  mn=Reduce("+", mats) / length(mats)
+  mn=rowMeans(do.call(cbind, mats), na.rm = TRUE)
 
   print(mn)
 }
