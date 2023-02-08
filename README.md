@@ -182,7 +182,7 @@ eval.simple = wsl.evaluate.pa(x = ppm.simple,
 summary(eval.simple)
 ```
 
-Evaluation example by resetting a potential fitted bias covariate to 0 values (to remove sampling bias):
+Evaluation example by resetting a potential fitted bias covariate to 0 values (e.g. to remove sampling bias):
 ``` r
 eval.bias = wsl.evaluate.pa(x = ppm.simple,
                             crit = "maxTSS",
@@ -191,7 +191,7 @@ eval.bias = wsl.evaluate.pa(x = ppm.simple,
 summary(eval.bias)
 ```
 
-Get calcluated thresholds (mean may be chosen):
+Get calculated thresholds (mean may be chosen):
 ``` r
 get_thres(eval.lasso, mean = FALSE)
 get_thres(eval.simple, mean = TRUE)
