@@ -21,10 +21,11 @@ wsl.evaluate.pa(
 
 \item{tester}{Optional. A data.frame with testing data. Only mandatory if replicatetype='none'
 was chosen when models were fitted. Otherwise, used when evaluation against external dataset is needed.
-Must be a data.frame with as columns in order : "Presence" ('0' and '1'), "CV" (numeric: chosen
-cv-folds; if replicatetype='none' -> only '1') and associated environmental values (same ones as
-for fitted models; i.e. same columns order and names). Note that categorical predictor values must
-be of class factor. NB: Here, model evaluation will only be initiated for the new testing data.}
+Must be a data.frame with as columns in order: "x", "y", "Presence" ('0' and '1'), "CV" (numeric: chosen
+cv-folds or just set '1' if test only vs one external dataset; if replicatetype='none' '1' is mandatory)
+and associated environmental values (same ones as for fitted models; i.e. same columns order and names).
+Note that categorical predictor values must be of class factor. NB: Here, model evaluation will only be
+initiated for the new testing data.}
 
 \item{window}{Only when 'wsl.ppmO' used'. Same object of class 'owin' used for models (in developments)}
 
