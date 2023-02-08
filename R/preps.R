@@ -23,7 +23,7 @@ preps=function(env=parent.frame(),call){
   
   if(env$replicatetype%in%c("cv","block-cv","splitsample")==TRUE && (is.na("reps") ==TRUE || env$reps<2)){stop("Give reasonalbe number of replicates!")}
   
-  if(env$replicatetype=="none" && env$reps>1){env$reps=1;warning("Replicate type is 'none' but multiple replicates were chosen - replicates are set to 1")}
+  if(env$replicatetype=="none" && env$reps>1){stop("Replicate type is 'none' but multiple replicates were chosen - 'reps' must be set to 1")}
   
   if(is.null(env$quadPoints)){
     
