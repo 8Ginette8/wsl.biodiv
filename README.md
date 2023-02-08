@@ -120,6 +120,7 @@ block_cv_xy = make_blocks(nstrat = 5, df = to_b_xy, nclusters = 10, pres = toSam
 to_b_env = rbind(envG,quadG1@Qenv[,-1])
 block_cv_env = make_blocks(nstrat = 5, df = to_b_env, nclusters = 10, pres = toSamp)
 ```
+Here, we are basically applying environmental k-medoid clustering to the obervations, and k-nearest neighbors (relative to the observation clusters) to the quadrature points.
 
 ### Run PPMs
 
@@ -182,7 +183,7 @@ eval.simple = wsl.evaluate.pa(x = ppm.simple,
 summary(eval.simple)
 ```
 
-Evaluation example by resetting a potential fitted bias covariate to 0 values (to remove sampling bias):
+Evaluation example by resetting a potential fitted bias covariate to 0 values (e.g. to remove sampling bias):
 ``` r
 eval.bias = wsl.evaluate.pa(x = ppm.simple,
                             crit = "maxTSS",
@@ -191,7 +192,7 @@ eval.bias = wsl.evaluate.pa(x = ppm.simple,
 summary(eval.bias)
 ```
 
-Get calcluated thresholds (mean may be chosen):
+Get calculated thresholds (mean may be chosen):
 ``` r
 get_thres(eval.lasso, mean = FALSE)
 get_thres(eval.simple, mean = TRUE)
