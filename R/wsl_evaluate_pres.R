@@ -6,10 +6,11 @@
 #' @param x A wsl.ppm fit object
 #' @param tester Optional. A data.frame with testing data. Only mandatory if replicatetype='none'
 #' was chosen when models were fitted. Otherwise, used when evaluation against external dataset is needed.
-#' Must be a data.frame with as columns in order: "x", "y", "Presence" ('0' and '1'), "CV" (numeric: chosen
-#' cv-folds; if replicatetype='none' -> only '1') and associated environmental values (same ones as
-#' for fitted models; i.e. same columns order and names). Note that categorical predictor values must
-#' be of class factor. NB: Here, model evaluation will only be initiated for the new testing data. 
+#' Must be a data.frame with as columns in order: "x", "y", "Presence" ('0'/'1' or only '1'), "CV" (numeric:
+#' chosen cv-folds or just set '1' if test only vs one external dataset; if replicatetype='none' '1' is
+#' mandatory) and associated environmental values (same ones as for fitted models; i.e. same columns
+#' order and names). Note that categorical predictor values must be of class factor. NB: Here, model
+#' evaluation will only be initiated for the new testing data. 
 #' @param thres Vector of the same length as the number of reps in model fit object
 #' @param pres_abs Logical. If TRUE, evaluation metrics of presence-only models is applied to a wsl.fit
 #' object of presence-absence models
@@ -195,15 +196,29 @@ wsl.evaluate.pres<-function(x,tester=data.frame(),env_vars,window=NULL,thres=num
     cv.ind=length(table(tester$CV))
     fit.ind=length(x@fits)
     if (cv.ind!=fit.ind){
-      warning("CV in 'tester' different than number of fit reps...!")
-    }
+      warning("CV folds in 'tester' different than number of fit reps...!")
 
-    # Replace all tesdat
-    p.cv = which(colnames(tester)%in%c("CV","x","y"))
-    if (pres_abs){
-      x@tesdat = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv])
+      if (all(tester$CV==1)){
+
+        # Replace all tesdat
+        p.cv = which(colnames(tester)%in%c("CV","x","y"))
+        if (pres_abs){
+          x@tesdat = lapply(1:fit.ind,function(x) tester[,-p.cv])
+        } else {
+          x@tesdat = lapply(1:fit.ind,function(x) tester[,-p.cv[3]])
+        }
+      } else {
+        stop("CV folds in 'tester' must be equal to the number of fit reps...!")
+      }
     } else {
-      x@tesdat = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv[3]])
+
+      # Replace all tesdat
+      p.cv = which(colnames(tester)%in%c("CV","x","y"))
+      if (pres_abs){
+        x@tesdat = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv])
+      } else {
+        x@tesdat = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv[3]])
+      }
     }
   }
 

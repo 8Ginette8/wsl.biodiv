@@ -7,10 +7,11 @@
 #' @param x A wsl.fit object
 #' @param tester Optional. A data.frame with testing data. Only mandatory if replicatetype='none'
 #' was chosen when models were fitted. Otherwise, used when evaluation against external dataset is needed.
-#' Must be a data.frame with as columns in order : "Presence" ('0' and '1'), "CV" (numeric: chosen
-#' cv-folds; if replicatetype='none' -> only '1') and associated environmental values (same ones as
-#' for fitted models; i.e. same columns order and names). Note that categorical predictor values must
-#' be of class factor. NB: Here, model evaluation will only be initiated for the new testing data. 
+#' Must be a data.frame with as columns in order: "x", "y", "Presence" ('0' and '1'), "CV" (numeric: chosen
+#' cv-folds or just set '1' if test only vs one external dataset; if replicatetype='none' '1' is mandatory)
+#' and associated environmental values (same ones as for fitted models; i.e. same columns order and names).
+#' Note that categorical predictor values must be of class factor. NB: Here, model evaluation will only be
+#' initiated for the new testing data.
 #' @param thres Vector of the same length as the number of reps in model fit object. For wsl.flex
 #' model outputs, thresholds have to be labelled with the same names provided to models.
 #' @param crit Which threshold criterion should be considered? Currently 'pp=op'
@@ -136,18 +137,33 @@ wsl.evaluate.pa<-function(x,tester=data.frame(),window=NULL,thres=numeric(),
 
   if (nrow(tester)!=0){
 
+    # If we have only presences stop the process
+    if (all(tester$Presence==1)) {
+      stop("Impossible to evaluate the models when 'tester' only has presences...")
+    }
+
     # Test if enough cv-fold in tester for number of fit reps
     cv.ind=length(table(tester$CV))
     fit.ind=length(x@fits)
     if (cv.ind!=fit.ind){
-      warning("CV in 'tester' different than number of fit reps...")
+      warning("CV folds in 'tester' different than number of fit reps...!")
+
+      if (all(tester$CV==1)){
+
+        # Depending on number of reps, set new tesdat!
+        p.cv = which(colnames(tester)%in%c("CV","x","y","Presence"))
+        testa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv])
+        papa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,"Presence"])
+      
+      } else {
+        stop("CV folds in 'tester' must be equal to the number of fit reps...!")
+      }
+    } else {
+      # Depending on number of reps, set new tesdat!
+      p.cv = which(colnames(tester)%in%c("CV","x","y","Presence"))
+      testa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv])
+      papa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,"Presence"])
     }
-
-    # Depending on number of reps, set new tesdat!
-    p.cv = which(colnames(tester)%in%c("CV","x","y","Presence"))
-    testa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,-p.cv])
-    papa = lapply(1:fit.ind,function(x) tester[tester$CV%in%x,"Presence"])
-
   } else if (x@meta$replicatetype%in%c("cv","block-cv","splitsample")){
 
     # In case of pres_only=TRUE
