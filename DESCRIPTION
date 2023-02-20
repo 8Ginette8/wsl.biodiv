@@ -18,6 +18,7 @@ RoxygenNote: 7.1.2
 Authors: Philipp Brun [cre,aut] ------------ email: philipp.brun@wsl.ch
     Yohann Chauvier [cre,aut] ----------- email: yohann.chauvier@wsl.ch
     Rafael Wueest [aut] ------------------- email: rafael.wueest@wsl.ch
+    Patrice Descombes [aut] ------------- email: patrice.descombes@wsl.ch
 Collate:
     'boycei.R'
     'ceval.R'
@@ -67,3 +68,5 @@ Collate:
     'wsl_test_quadrature.R'
     'wsl_varKeep.R'
     'wsl_varPPower.R'
+    'permut_importance.R'
+    'glmnet_predict.R'

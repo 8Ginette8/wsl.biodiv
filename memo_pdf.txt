@@ -5,4 +5,4 @@ devtools::document()
 system("R CMD Rd2pdf . --title=wsl.biodiv --output=./wsl_biodiv.pdf --force --no-clean --internals")
 
 # To install package locally from main directory
-install.packages("../wsl.biodiv_r_package",repos=NULL,type="source")
+install.packages("../wsl.biodiv",repos=NULL,type="source")
