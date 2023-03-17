@@ -244,3 +244,5 @@ sapply(1:5,function(x) plot(pred.bias@predictions[[x]][[1]]))
 Brun, P., Thuiller, W., Chauvier, Y., Pellissier, L., Wüest, R. O., Wang, Z., & Zimmermann, N. E. (2020). Model complexity affects species distribution projections under climate change. Journal of Biogeography, 47(1), 130-142. doi: <a href="https://doi.org/10.1111/jbi.13734">10.1111/jbi.13734</a>
 
 Chauvier, Y., Thuiller, W., Brun, P., Lavergne, S., Descombes, P., Karger, D. N., ... & Zimmermann, N. E. (2021). Influence of climate, soil, and land cover on plant species distribution in the European Alps. Ecological monographs, 91(2), e01433. doi: <a href="https://doi.org/10.1002/ecm.1433">10.1002/ecm.1433</a>
+
+Descombes, P., Chauvier, Y., Brun, P., Righetti, D., Wüest, R. O., Karger, D. N., ... & Zimmermann, N. E. (2022). Strategies for sampling pseudo-absences for species distribution models in complex mountainous terrain. bioRxiv, 2022-03. doi: <a href="https://doi.org/10.1101/2022.03.24.485693">10.1101/2022.03.24.485693</a>
