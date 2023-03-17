@@ -39,10 +39,10 @@
 #' 
 #' # Run function
 #' sp.env = get_env(env_layers = URL.links,
-#' 					env_id = c("tmax","tmin"),
-#' 					year_id = 1901:1921,
-#' 					obs = obs,
-#' 					d.path = getwd())
+#'                  env_id = c("tmax","tmin"),
+#'                  year_id = 1901:1921,
+#'                  obs = obs,
+#'                  d.path = getwd())
 #' 
 #' @export
 #' 
