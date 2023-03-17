@@ -27,6 +27,7 @@ Collate:
     'df_or_rast.R'
     'ecoBoyce.R'
     'ecospat_d2.R'
+    'get_env.R'
     'get_thres.R'
     'glmnet_predict.R'
     'hde.R'
