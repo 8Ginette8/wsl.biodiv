@@ -2,7 +2,7 @@ Package: wsl.biodiv
 Type: Package
 Title: A toolbox to efficiently handle Species Distribution Modelling (SDMs) in collaborative projects
 Version: 0.1.0
-Depends: R (>= 3.1.0), snow, mgcv, dismo, MASS, class, NMOF, gbm, randomForest, ROCR, cluster, spatstat, raster, terra, foreach, doParallel, usdm, glmnet, neuralnet, rgdal, lme4, MuMIn, ape
+Depends: R (>= 3.1.0), snow, mgcv, dismo, MASS, class, NMOF, gbm, randomForest, ROCR, cluster, spatstat, raster, terra, foreach, doParallel, usdm, glmnet, neuralnet, lme4, MuMIn, ape
 Description: Package aiming at varied and flexible model fitting and tools for SDMs.
     Meta information should be stored (author, date, taxon,...) efficiently.
     Model evaluation and prediction should flexibly handle various fitted model objects.
