@@ -5,25 +5,33 @@
 \title{Extract environments based on yearly observations (local or URL sources)}
 \usage{
 get_env(
-  env_layers = NULL,
-  env_id = NULL,
-  year_id = NULL,
+  env_layers = c("prec", "tmin"),
+  timeline = "monthly",
+  months = c(6, 7, 8),
   obs = data.frame(),
+  download = TRUE,
   d.path = getwd()
 )
 }
 \arguments{
-\item{env_layers}{Vector of file names or URL links of desired environmental layers. The
-given strings must have the identity of the variable and the year informed.}
+\item{env_layers}{Vector. Which environment should be extracted? One or several may be
+chosen among 'prec', 'tmax' and 'tmin'. Default is c('prec','tmin').}
 
-\item{env_id}{Vector. What are the unique names (as specified in 'env_layers') of the target
-variables?}
+\item{timeline}{String. What type of data extraction is applied? Available choices are
+'yearly' or 'monthly'. One or the other will give mean, median, min and max values. To
+note that 'monthly' will run faster than 'yearly' since less files will be downloaded.
+Default is 'monthly'.}
 
-\item{year_id}{Vector. What are the unique years (as specified in 'env_layers') we want the
-environment from?}
+\item{months}{Vector. Only if time = 'monthly'. Which months should be accounted
+for? Input must be from 1 to 12. To note that values from -1200 (December n-1) to 1200
+(December n+1; step of 100) may be chosen, and corresponds to the months of the year n-1
+and n+1 respectively. Default is June, July and August.}
 
-\item{obs}{A data.frame with three columns (1-Longitude, 2-Latitude and 3-year of sampling).
-The observations needs to be from the same CRS as the 'env_layers'.}
+\item{obs}{A data.frame with three columns (describing in order: Longitude, Latitude and year
+of sampling). The observations needs to be from the same CRS as the 'env_layers'.}
+
+\item{download}{Logical. If FALSE, the environmental layers are locally available and will be
+extracted from 'd.path'.}
 
 \item{d.path}{Character. The folder path where the environmental layers should be saved or stored.}
 }
@@ -31,34 +39,28 @@ The observations needs to be from the same CRS as the 'env_layers'.}
 A data.frame describing for each observations their associated environmental values.
 }
 \description{
-Based on local files or URL sources, this function extracts environmental
-values from given observations at their year of sampling. Although the function
-was developped mainly for CHELSA (https://chelsa-climate.org/), it can easily be
-used for other type of data sources if following the same file format (i.e. single
-raster files, informed environments and year in the URL or file names)
+Based on the integrated list of CHELSA files (https://chelsa-climate.org/;
+CHELSAcruts), this function extracts environmental values from given observations
+at their year of sampling (mean, median, min, max or montly averaged).It is
+important to note that CHELSAcruts is available for 1901-2016.
 }
 \examples{
 
 # Packages
 library(wsl.biodiv)
 data(xy_ppm)
-
-# URL links
-url.base = "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V1/chelsa_cruts/"
-url.sprint1 = sprintf(paste0("tmax/CHELSAcruts_tmax_10_\%d_V.1.0.tif"),1901:1911)
-url.sprint2 = sprintf(paste0("tmin/CHELSAcruts_tmin_10_\%d_V.1.0.tif"),1906:1921)
-URL.links = paste0(url.base,c(url.sprint1,url.sprint2))
  
 # Dummy observations
 random.year = (1901:1921)[sample(1:21,nrow(xy.ppm),replace=TRUE)]
-obs = data.frame(xy.ppm[,c("x","y")],year=random.year)
+obs = data.frame(xy.ppm[,c("x","y")],year=random.year)[1:5,]
 
 # Run function
-sp.env = get_env(env_layers = URL.links,
-                 env_id = c("tmax","tmin"),
-                 year_id = 1901:1921,
+sp.env = get_env(env_layers = 'tmin',
+                 timeline = 'monthly',
+                 months = c(-1200,1,2),
                  obs = obs,
-                 d.path = getwd())
+					download = TRUE,
+					d.path = getwd())
 
 }
 \references{

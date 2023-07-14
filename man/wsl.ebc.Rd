@@ -19,8 +19,10 @@ wsl.ebc(
 )
 }
 \arguments{
-\item{obs}{Object of class matrix or data frame with three columns named sp.id (character),
-x (numeric) and y (numeric). More than one observation per species must be referenced.}
+\item{obs}{Object of class matrix or data frame with three columns named "sp.id" (character),
+"x" (numeric) and "y" (numeric). More than one observation per species must be referenced. If
+only one species is in the data.frame, its sole observations will be resampled (equally or
+proportionally) across the environmental clusters.}
 
 \item{ras}{Object of class RasterBrick, RasterStack, list of RasterLayer of desired resolution
 and extent. Used to generate the map of clusters needed to summarize the environmental space of
