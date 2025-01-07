@@ -17,7 +17,7 @@ preps=function(env=parent.frame(),call){
   
   if(env$replicatetype%in%c("none","cv","block-cv","splitsample")==FALSE){stop("Non-existing replicatetype!")}
   
-  if(env$replicatetype=="block-cv" && is.na(env$strata)){stop("Stratum vector needed for block crossvalidation!")}
+  if(env$replicatetype=="block-cv" && is.na(env$strata[1])){stop("Stratum vector needed for block crossvalidation!")}
   
   if(env$replicatetype=="block-cv" && length(unique(env$strata))!=env$reps){stop("Stratum vector has wrong number of levels!")}
   
