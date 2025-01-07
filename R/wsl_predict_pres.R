@@ -237,7 +237,7 @@ wsl.predict.pres<-function(x,thres=numeric(),predat=list(),
       if (class(pred)%in%"try-error") {pred=NA}
 
       # Convert with log or not ?
-      if (log_trans && !(class(x@fits[[i]][[j]]) %in% "cv.glmnet")) {
+      if (log_trans && !(class(x@fits[[i]][[j]])[1] %in% "cv.glmnet")) {
          if (class(pred) %in% "data.frame") {
            pred=log(pred$pred)
          } else {

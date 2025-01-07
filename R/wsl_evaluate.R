@@ -238,7 +238,7 @@ wsl.evaluate.pa<-function(x,tester=data.frame(),window=NULL,thres=numeric(),
           pred = prd.pres(mod=x@fits[[i]][[j]],env_vars=testa[[i]],valid.pres=NULL,
             window=window,polly=pol,meta=Xmeta,coefs=Xcoefs,id.fact=id.factor)
 
-          if (log_trans && !(class(x@fits[[i]][[j]]) %in% "cv.glmnet")) {
+          if (log_trans && !(class(x@fits[[i]][[j]])[1] %in% "cv.glmnet")) {
             pred = log(pred)
           }
        

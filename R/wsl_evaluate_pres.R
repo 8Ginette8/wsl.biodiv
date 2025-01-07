@@ -356,7 +356,7 @@ wsl.evaluate.pres<-function(x,tester=data.frame(),env_vars,window=NULL,thres=num
           }
 
           # Make the log.trans works only for non-lasso
-          if (log_trans && !(class(x@fits[[i]][[j]]) %in% "cv.glmnet")) {
+          if (log_trans && !(class(x@fits[[i]][[j]])[1] %in% "cv.glmnet")) {
             if (class(pred) %in% "data.frame") {
               pred[,"pred"]=log(pred[,"pred"])
             } else {
